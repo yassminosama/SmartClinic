@@ -6,8 +6,8 @@ namespace SmartClinic.Models
     {
         [Key]
         public int AppointmentId { get; set; }
-        public int PatientId { get; set; }
-        public int DoctorId { get; set; }
+        public string PatientId { get; set; }
+        public string DoctorId { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string Status { get; set; } = "Scheduled";
         public bool IsDeleted { get; set; } = false;

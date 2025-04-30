@@ -3,14 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SmartClinic.Models
 {
-    public class Doctor : IdentityUser
+    public class Doctor : AppUser
     {
-            [Key]
-            public int DoctorId { get; set; }
+            
             public string FullName { get; set; }
             public string Specialization { get; set; }
-            public string Phone { get; set; }
-            public string Email { get; set; }
+       
+           
             public string Image { get; set; }
             public List<DateTime?> ExceptionDates { get; set; } = new List<DateTime?>();
             public List<string> DefaultDate { get; set; } = new List<string>();
@@ -20,7 +19,8 @@ namespace SmartClinic.Models
             // Navigation properties
             public ICollection<Appointment> Appointments { get; set; }
             public ICollection<Prescription> Prescriptions { get; set; }
-        }
+        public ICollection<Receptionist> Receptionists { get; set; }
+    }
 
     }
 

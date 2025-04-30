@@ -6,7 +6,7 @@ namespace SmartClinic.Models
     {
         [Key]
         public int HistoryId { get; set; }
-        public int PatientId { get; set; }
+        public string PatientId { get; set; }
         public List<string> Diagnoses { get; set; } = new List<string>();
         public DateTime? DiagnosesDate { get; set; }
         public List<string> Notes { get; set; } = new List<string>();
