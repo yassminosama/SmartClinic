@@ -3,15 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SmartClinic.Models
 {
-    public class Patient : IdentityUser
+    public class Patient : AppUser
     {
-        [Key]
-            public int PatientId { get; set; }
+       
             public string FullName { get; set; }
             public DateTime? DateOfBirth { get; set; }
             public string Gender { get; set; }
-            public string Phone { get; set; }
-            public string Email { get; set; }
+          
+          
             public string Address { get; set; }
             public string Image { get; set; }
             public bool IsDeleted { get; set; } = false;

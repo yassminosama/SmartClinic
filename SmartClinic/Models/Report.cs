@@ -6,7 +6,7 @@ namespace SmartClinic.Models
     {
         [Key]
         public int ReportId { get; set; }
-        public int PatientId { get; set; }
+        public string? PatientId { get; set; }
         public DateTime ReportDate { get; set; } 
         public string Description { get; set; }
         public string Attachment { get; set; }

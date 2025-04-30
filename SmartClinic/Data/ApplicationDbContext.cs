@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.Models;
 
 
 namespace SmartClinic.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -13,6 +14,7 @@ namespace SmartClinic.Data
         }
 
         // DbSets for each table
+
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Receptionist> Receptionists { get; set; }
@@ -48,7 +50,7 @@ namespace SmartClinic.Data
             modelBuilder.Entity<Receptionist>()
                  .HasOne(r => r.Doctor)
                  .WithMany(d => d.Receptionists)
-                 .HasForeignKey(r => r.DoctorId)
+                 .HasForeignKey(r => r.Id)
                  .OnDelete(DeleteBehavior.Restrict);
 
 
@@ -120,7 +122,7 @@ namespace SmartClinic.Data
 
 
 
-            modelBuilder.Entity<IdentityRole>().HasData(
+           /* modelBuilder.Entity<IdentityRole>().HasData(
                new IdentityRole
                {
                    Id = "08315c1a-38fe-4c63-b1db-24bd4e171c46",
@@ -149,7 +151,7 @@ namespace SmartClinic.Data
                    Name = "Patient",
                    NormalizedName = "PATIENT"
                }
-                );
+                );*/
           
 
             base.OnModelCreating(modelBuilder);

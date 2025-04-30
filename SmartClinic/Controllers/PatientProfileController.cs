@@ -5,7 +5,7 @@ using SmartClinic.Models;
 using System.Linq;
 
 
-public class PatientProfileController : Controller
+/*public class PatientProfileController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -68,3 +68,4 @@ public class PatientProfileController : Controller
 }
 
 
+*/

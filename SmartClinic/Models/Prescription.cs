@@ -7,8 +7,8 @@ namespace SmartClinic.Models
         [Key]
         public int PrescriptionId { get; set; }
         public int AppointmentId { get; set; }
-        public int DoctorId { get; set; }
-        public int PatientId { get; set; }
+        public string DoctorId { get; set; }
+        public string PatientId { get; set; }
         public DateTime PrescriptionDate { get; set; } 
         public string Diagnoses { get; set;}
         public string Notes { get; set; } 

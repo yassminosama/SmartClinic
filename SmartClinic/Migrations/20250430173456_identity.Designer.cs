@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartClinic.Data;
 
@@ -11,9 +12,11 @@ using SmartClinic.Data;
 namespace SmartClinic.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250430173456_identity")]
+    partial class identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,6 +50,36 @@ namespace SmartClinic.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "08315c1a-38fe-4c63-b1db-24bd4e171c46",
+                            ConcurrencyStamp = "cb0bf9cc-76b2-4a01-8e66-378b16165d88",
+                            Name = "Receptionist",
+                            NormalizedName = "RECEPTIONIST"
+                        },
+                        new
+                        {
+                            Id = "756d924b-cec7-4005-b796-8b91efd141cc",
+                            ConcurrencyStamp = "3a68da19-f24e-4967-afaa-fe06f99e8fe9",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "a81dc085-b544-42ff-b0b1-1f6bdfe29e69",
+                            ConcurrencyStamp = "296e52b6-a3d3-446e-81a9-14bab21686ca",
+                            Name = "Doctor",
+                            NormalizedName = "DOCTOR"
+                        },
+                        new
+                        {
+                            Id = "fd1569ea-50da-4ff7-95d7-9a14d12830a4",
+                            ConcurrencyStamp = "dea9bd91-b91b-4486-858f-ca80ae5305d3",
+                            Name = "Patient",
+                            NormalizedName = "PATIENT"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -167,11 +200,6 @@ namespace SmartClinic.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -223,10 +251,6 @@ namespace SmartClinic.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator().HasValue("AppUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Appointment", b =>
@@ -243,19 +267,17 @@ namespace SmartClinic.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DoctorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PatientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ReceptionistId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("ReceptionistId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -296,16 +318,14 @@ namespace SmartClinic.Migrations
                     b.Property<bool>("IsRefunded")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PatientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ReceptionistId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ReceptionistId")
+                        .HasColumnType("int");
 
                     b.HasKey("BillId");
 
@@ -317,6 +337,96 @@ namespace SmartClinic.Migrations
                     b.HasIndex("ReceptionistId");
 
                     b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("SmartClinic.Models.Doctor", b =>
+                {
+                    b.Property<int>("DoctorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorId"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.PrimitiveCollection<string>("DefaultDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.PrimitiveCollection<string>("ExceptionDates")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Specialization")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DoctorId");
+
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.MedicalHistory", b =>
@@ -341,9 +451,8 @@ namespace SmartClinic.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PatientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
 
                     b.HasKey("HistoryId");
 
@@ -392,6 +501,91 @@ namespace SmartClinic.Migrations
                     b.ToTable("Medications");
                 });
 
+            modelBuilder.Entity("SmartClinic.Models.Patient", b =>
+                {
+                    b.Property<int>("PatientId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientId"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PatientId");
+
+                    b.ToTable("Patients");
+                });
+
             modelBuilder.Entity("SmartClinic.Models.Prescription", b =>
                 {
                     b.Property<int>("PrescriptionId")
@@ -410,9 +604,8 @@ namespace SmartClinic.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DoctorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -421,9 +614,8 @@ namespace SmartClinic.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PatientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("PrescriptionDate")
                         .HasColumnType("datetime2");
@@ -437,6 +629,89 @@ namespace SmartClinic.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Prescriptions");
+                });
+
+            modelBuilder.Entity("SmartClinic.Models.Receptionist", b =>
+                {
+                    b.Property<int>("ReceptionistId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReceptionistId"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("Salary")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ReceptionistId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("Receptionists");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Report", b =>
@@ -458,8 +733,8 @@ namespace SmartClinic.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PatientId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ReportDate")
                         .HasColumnType("datetime2");
@@ -469,116 +744,6 @@ namespace SmartClinic.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Reports");
-                });
-
-            modelBuilder.Entity("SmartClinic.Models.Doctor", b =>
-                {
-                    b.HasBaseType("SmartClinic.Models.AppUser");
-
-                    b.PrimitiveCollection<string>("DefaultDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.PrimitiveCollection<string>("ExceptionDates")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Specialization")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("Doctor");
-                });
-
-            modelBuilder.Entity("SmartClinic.Models.Patient", b =>
-                {
-                    b.HasBaseType("SmartClinic.Models.AppUser");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.ToTable("AspNetUsers", t =>
-                        {
-                            t.Property("FullName")
-                                .HasColumnName("Patient_FullName");
-
-                            t.Property("Image")
-                                .HasColumnName("Patient_Image");
-
-                            t.Property("IsDeleted")
-                                .HasColumnName("Patient_IsDeleted");
-                        });
-
-                    b.HasDiscriminator().HasValue("Patient");
-                });
-
-            modelBuilder.Entity("SmartClinic.Models.Receptionist", b =>
-                {
-                    b.HasBaseType("SmartClinic.Models.AppUser");
-
-                    b.Property<string>("DoctorId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal?>("Salary")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.ToTable("AspNetUsers", t =>
-                        {
-                            t.Property("FullName")
-                                .HasColumnName("Receptionist_FullName");
-
-                            t.Property("Image")
-                                .HasColumnName("Receptionist_Image");
-
-                            t.Property("IsDeleted")
-                                .HasColumnName("Receptionist_IsDeleted");
-                        });
-
-                    b.HasDiscriminator().HasValue("Receptionist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -729,25 +894,26 @@ namespace SmartClinic.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("SmartClinic.Models.Receptionist", b =>
+                {
+                    b.HasOne("SmartClinic.Models.Doctor", "Doctor")
+                        .WithMany("Receptionists")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+                });
+
             modelBuilder.Entity("SmartClinic.Models.Report", b =>
                 {
                     b.HasOne("SmartClinic.Models.Patient", "Patient")
                         .WithMany("Reports")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("SmartClinic.Models.Receptionist", b =>
-                {
-                    b.HasOne("SmartClinic.Models.Doctor", "Doctor")
-                        .WithMany("Receptionists")
-                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Doctor");
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Appointment", b =>
@@ -756,11 +922,6 @@ namespace SmartClinic.Migrations
                         .IsRequired();
 
                     b.Navigation("Prescriptions");
-                });
-
-            modelBuilder.Entity("SmartClinic.Models.Prescription", b =>
-                {
-                    b.Navigation("Medications");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Doctor", b =>
@@ -783,6 +944,11 @@ namespace SmartClinic.Migrations
                     b.Navigation("Prescriptions");
 
                     b.Navigation("Reports");
+                });
+
+            modelBuilder.Entity("SmartClinic.Models.Prescription", b =>
+                {
+                    b.Navigation("Medications");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Receptionist", b =>
