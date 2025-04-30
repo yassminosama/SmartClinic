@@ -37,6 +37,23 @@ namespace SmartClinic.Data
                 .Property(r => r.Salary)
                 .HasPrecision(18, 2); // Precision: 18, Scale: 2
 
+
+            ///////////////////////
+            //modelBuilder.Entity<Receptionist>()
+            //   .HasOne(r => r.Doctor)
+            //   .WithMany(d => ((Doctor)d).Receptionists)
+            //   .HasForeignKey(r => r.DoctorId)
+            //   .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Receptionist>()
+                 .HasOne(r => r.Doctor)
+                 .WithMany(d => d.Receptionists)
+                 .HasForeignKey(r => r.DoctorId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+
+
+
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Patient)
                 .WithMany(p => p.Appointments)

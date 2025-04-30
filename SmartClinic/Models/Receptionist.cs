@@ -17,7 +17,9 @@ namespace SmartClinic.Models
             // Navigation properties
             public ICollection<Bill> Bills { get; set; }
             public ICollection<Appointment> Appointments { get; set; }
-        }
+        public int DoctorId { get; set; }  // Foreign Key
+        public Doctor Doctor { get; set; }  // Navigation Property
+    }
 
     }
 

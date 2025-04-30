@@ -20,7 +20,8 @@ namespace SmartClinic.Models
             // Navigation properties
             public ICollection<Appointment> Appointments { get; set; }
             public ICollection<Prescription> Prescriptions { get; set; }
-        }
+        public ICollection<Receptionist> Receptionists { get; set; }
+    }
 
     }
 
