@@ -1,0 +1,68 @@
+﻿@using SmartClinic.ViewModels
+@model AppointmentBookingVM
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<h2>Book an Appointment</h2>
+
+@if (TempData["Success"] != null)
+{
+        <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<form asp-action="Book" method="post">
+    <div class="form-group">
+        <label>Specialization</label>
+        <select id="Specialization" name="SelectedSpecialization" class="form-control">
+            <option value="">-- Select Specialization --</option>
+            @foreach (var spec in Model.Specializations)
+            {
+                    <option value="@spec">@spec</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Doctor</label>
+        <select id="DoctorId" name="DoctorId" class="form-control">
+            <option value="">-- Select Doctor --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="AppointmentDate" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Book</button>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#Specialization').change(function () {
+                var selectedSpec = $(this).val();
+                $('#DoctorId').empty().append('<option value="">Loading...</option>');
+
+                if (selectedSpec !== "") {
+                    $.ajax({
+                        url: '/Appointment/GetDoctorsBySpecialization',
+                        type: 'GET',
+                        data: { specialization: selectedSpec },
+                        success: function (data) {
+                            $('#DoctorId').empty().append('<option value="">-- Select Doctor --</option>');
+                            $.each(data, function (i, doctor) {
+                                $('#DoctorId').append('<option value="' + doctor.id + '">' + doctor.fullName + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#DoctorId').empty().append('<option value="">-- Select Doctor --</option>');
+                }
+            });
+        });
+    </script>
+}

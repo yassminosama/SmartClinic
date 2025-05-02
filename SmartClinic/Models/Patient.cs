@@ -7,15 +7,6 @@ namespace SmartClinic.Models
 {
     public class Patient : AppUser
     {
-       
-           
-          
-          
-          
-          
-           
-         
-
             public bool IsDeleted { get; set; } = false;
 
             // Navigation properties

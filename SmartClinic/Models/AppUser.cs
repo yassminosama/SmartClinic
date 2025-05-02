@@ -13,5 +13,7 @@ namespace SmartClinic.Models
         [NotMapped]
 
         public IFormFile imageFile { get; set; }
+        //public string? Specialization { get; internal set; }
+        //public bool IsDeleted { get; internal set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartClinic.Data;
 
@@ -11,9 +12,11 @@ using SmartClinic.Data;
 namespace SmartClinic.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250502150448_testrun")]
+    partial class testrun
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -314,7 +317,7 @@ namespace SmartClinic.Migrations
 
                     b.HasIndex("ReceptionistId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Bill", b =>
@@ -361,7 +364,7 @@ namespace SmartClinic.Migrations
 
                     b.HasIndex("ReceptionistId");
 
-                    b.ToTable("Bills", (string)null);
+                    b.ToTable("Bills");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.MedicalHistory", b =>
@@ -394,7 +397,7 @@ namespace SmartClinic.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("MedicalHistories", (string)null);
+                    b.ToTable("MedicalHistories");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Medication", b =>
@@ -434,7 +437,7 @@ namespace SmartClinic.Migrations
 
                     b.HasIndex("PrescriptionId");
 
-                    b.ToTable("Medications", (string)null);
+                    b.ToTable("Medications");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Prescription", b =>
@@ -481,7 +484,7 @@ namespace SmartClinic.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Prescriptions", (string)null);
+                    b.ToTable("Prescriptions");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Report", b =>
@@ -513,7 +516,7 @@ namespace SmartClinic.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Reports", (string)null);
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("SmartClinic.Models.Doctor", b =>
@@ -547,7 +550,7 @@ namespace SmartClinic.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.ToTable("AspNetUsers", null, t =>
+                    b.ToTable("AspNetUsers", t =>
                         {
                             t.Property("IsDeleted")
                                 .HasColumnName("Patient_IsDeleted");
@@ -570,7 +573,7 @@ namespace SmartClinic.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.ToTable("AspNetUsers", null, t =>
+                    b.ToTable("AspNetUsers", t =>
                         {
                             t.Property("IsDeleted")
                                 .HasColumnName("Receptionist_IsDeleted");
