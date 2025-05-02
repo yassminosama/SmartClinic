@@ -122,7 +122,7 @@ namespace SmartClinic.Data
 
 
 
-           /* modelBuilder.Entity<IdentityRole>().HasData(
+            modelBuilder.Entity<IdentityRole>().HasData(
                new IdentityRole
                {
                    Id = "08315c1a-38fe-4c63-b1db-24bd4e171c46",
@@ -151,7 +151,7 @@ namespace SmartClinic.Data
                    Name = "Patient",
                    NormalizedName = "PATIENT"
                }
-                );*/
+                );
           
 
             base.OnModelCreating(modelBuilder);

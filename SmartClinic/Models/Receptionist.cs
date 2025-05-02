@@ -7,10 +7,10 @@ namespace SmartClinic.Models
     {
     
      
-            public string? FullName { get; set; }
+      
          
          
-            public string Image { get; set; }
+
             public decimal? Salary { get; set; }
             public bool IsDeleted { get; set; } = false;
 
