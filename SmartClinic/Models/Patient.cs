@@ -1,18 +1,21 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartClinic.Models
 {
     public class Patient : AppUser
     {
        
-            public string FullName { get; set; }
-            public DateTime? DateOfBirth { get; set; }
-            public string Gender { get; set; }
+           
           
           
-            public string Address { get; set; }
-            public string Image { get; set; }
+          
+          
+           
+         
+
             public bool IsDeleted { get; set; } = false;
 
             // Navigation properties
