@@ -1,0 +1,26 @@
+﻿@model IEnumerable<SmartClinic.Models.Doctor>
+
+@{
+    ViewData["Title"] = "Doctor List";
+}
+
+<h1>Doctors</h1>
+
+<div class="row">
+    @foreach (var doctor in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <img src="~/images/@doctor.Image" class="card-img-top" alt="Doctor Image" style="height: 200px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h5 class="card-title">@doctor.FullName</h5>
+                    <p class="card-text">@doctor.Specialization</p>
+                   
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Edit" asp-route-id="@doctor.Id" class="btn btn-primary btn-sm">Edit</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
