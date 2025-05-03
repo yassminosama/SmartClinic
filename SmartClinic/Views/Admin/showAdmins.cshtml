@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model List<Patient>
+@model List<AppUser>
 
 
 @{
@@ -221,7 +221,7 @@
     </style>
     <script>
         $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
 </head>
@@ -232,12 +232,13 @@
                 <div class="table-title">
                     <div class="row">
                         <div class="col-sm-5">
-                            <h2>User <b>Management</b></h2>
+                            <h2><b>Doctors </b>Management</h2>
                         </div>
                         <div class="col-sm-7">
-                            <a href="#" class="btn btn-secondary"><i class="material-icons">&#xE147;</i> <span>Add New User</span></a>
+                            <a href="/Account/Register" class="btn btn-secondary"><i class="material-icons">&#xE147;</i> <span>Add New User</span></a>
+                            <a href="/Admin/showPatients" class="btn btn-secondary"><i class="material-icons">&#xE147;</i> <span>go to patients</span></a>
                             <a href="/Admin/showDoctors" class="btn btn-secondary"><i class="material-icons">&#xE147;</i> <span>go to Doctors</span></a>
-                            <a href="/Admin/showAdmins" class="btn btn-secondary"><i class="material-icons">&#xE147;</i> <span>go to Admins</span></a>
+
                         </div>
                     </div>
                 </div>
@@ -253,41 +254,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @{counter++;}
-                        @foreach(Patient patient in Model ){
 
-                         <tr>
-                            <td>@counter</td>
-                            <td><a href="#"><img src="~/Images/@patient.ImagePath" class="avatar" alt="Avatar"> @patient.FullName</a></td>
-                            <td>@patient.DateOfBirth</td>
-                            <td>@patient.Role??not declare</td>
-                            <td><span class="status text-success">&bull;</span> Active</td>
-                            <td>
-                                <td>     <a class="btn btn-outline-primary" href="/Account/delUserAccount/@patient.Id">Delete</a></td>
+                        @foreach (AppUser user in Model)
+                        {
+                            counter++;
+                            <tr>
+                                <td>@counter</td>
+                                <td><a href="#"><img src="~/Images/@user.ImagePath" class="avatar" alt="Avatar"> @user.FullName</a></td>
+                                <td>@user.DateOfBirth</td>
+                                <td>@user.Role</td>
+                                <td><span class="status text-success">&bull;</span> Active</td>
+                                <td>
+                                <td>     <a class="btn btn-outline-primary" href="/Account/delUserAccount?userId=@user.Id">Delete</a></td>
                                 <td>     <a class="btn btn-outline-primary" href="#">Update </a></td>
 
-                            </td>
-                        </tr>
-                       
+                                </td>
+                            </tr>
+
 
                         }
-                       
-                          
-                      
+
+
+
                     </tbody>
                 </table>
-                @* <div class="clearfix"> *@
-                @*     <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div> *@
-                @*     <ul class="pagination"> *@
-                @*         <li class="page-item disabled"><a href="#">Previous</a></li> *@
-                @*         <li class="page-item"><a href="#" class="page-link">1</a></li> *@
-                @*         <li class="page-item"><a href="#" class="page-link">2</a></li> *@
-                @*         <li class="page-item active"><a href="#" class="page-link">3</a></li> *@
-                @*         <li class="page-item"><a href="#" class="page-link">4</a></li> *@
-                @*         <li class="page-item"><a href="#" class="page-link">5</a></li> *@
-                @*         <li class="page-item"><a href="#" class="page-link">Next</a></li> *@
-                @*     </ul> *@
-                @* </div> *@
+              
             </div>
         </div>
     </div>

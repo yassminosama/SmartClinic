@@ -42,11 +42,15 @@ namespace SmartClinic.Controllers
                 user = new Patient();
 
                 }
-                else
+                else if(userModel.Role=="Doctor")
                 {
 
                     user = new Doctor();
 
+                }
+                else
+                {
+                    user = new AppUser();
                 }
                    
 
@@ -100,8 +104,15 @@ namespace SmartClinic.Controllers
 
             }
 
-  return RedirectToAction("Home/Index");
+ if(User.IsInRole("Admin"))
+            {
 
+                return RedirectToAction("showDoctors", "Admin");
+            }
+            else
+            {
+                return View();
+            }
 
         }
 
@@ -164,6 +175,25 @@ namespace SmartClinic.Controllers
 
 
 
+        }
+
+        public async Task< IActionResult> delUserAccount(string userId)
+        {
+            AppUser userModel = await userManager.FindByIdAsync(userId);
+
+            if (userModel != null)
+            {
+
+               await userManager.DeleteAsync(userModel);
+
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("showDoctors", "Admin");
+                }
+                return Content("the account is deleted");
+            }
+
+            return Content("user not found");
         }
        
     }

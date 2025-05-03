@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.Data;
@@ -7,6 +8,7 @@ using SmartClinic.ViewModels;
 
 namespace SmartClinic.Controllers
 {
+    [Authorize(Roles ="Admin")]
     public class AdminController : Controller
     {
 
@@ -33,57 +35,57 @@ namespace SmartClinic.Controllers
 
         }
 
-        [HttpPost]
-        public async Task<IActionResult> addAdmin(AdminVM adminUser )
-        {
+        //[HttpPost]
+        //public async Task<IActionResult> addAdmin(AdminVM adminUser )
+        //{
 
 
-            if (ModelState.IsValid) { 
+        //    if (ModelState.IsValid) { 
             
             
-             AppUser user=new AppUser();
+        //     AppUser user=new AppUser();
 
-                user.Address = adminUser.Address;
-                user.FullName=adminUser.Name;
-                user.Email=adminUser.Email;
-                    user.PhoneNumber = adminUser.PhoneNumber;
-                user.Gender=adminUser.Gender;
-                user.DateOfBirth=adminUser.DateOfBirth;
-                user.UserName=adminUser.userName;
-                user.Role = "Admin";
-                string filePath;
-                if (adminUser.imageFile != null) {
+        //        user.Address = adminUser.Address;
+        //        user.FullName=adminUser.Name;
+        //        user.Email=adminUser.Email;
+        //            user.PhoneNumber = adminUser.PhoneNumber;
+        //        user.Gender=adminUser.Gender;
+        //        user.DateOfBirth=adminUser.DateOfBirth;
+        //        user.UserName=adminUser.userName;
+        //        user.Role = "Admin";
+        //        string filePath;
+        //        if (adminUser.imageFile != null) {
 
-                    string file = Path.Combine(Host.WebRootPath, "Images");
-                    filePath = Path.Combine(file, adminUser.imageFile.FileName);
-                    user.ImagePath=adminUser.imageFile.FileName;
-                    adminUser.imageFile.CopyTo(new FileStream(filePath, FileMode.Create));
+        //            string file = Path.Combine(Host.WebRootPath, "Images");
+        //            filePath = Path.Combine(file, adminUser.imageFile.FileName);
+        //            user.ImagePath=adminUser.imageFile.FileName;
+        //            adminUser.imageFile.CopyTo(new FileStream(filePath, FileMode.Create));
                 
                 
                 
                 
-                }
-                IdentityResult res = await userManager.CreateAsync(user, adminUser.PassWord);
-                if (res.Succeeded)
-                {
+        //        }
+        //        IdentityResult res = await userManager.CreateAsync(user, adminUser.PassWord);
+        //        if (res.Succeeded)
+        //        {
 
 
-                  await  userManager.AddToRoleAsync(user, "Admin");
+        //          await  userManager.AddToRoleAsync(user, "Admin");
 
-                }
+        //        }
 
            
             
             
             
-            }
+        //    }
 
 
 
-            return View();
+        //    return View();
 
 
-        }
+        //}
         [HttpGet]
         public IActionResult createRole() {
 
@@ -138,6 +140,17 @@ namespace SmartClinic.Controllers
             List<Doctor> doctors = Db.Doctors.ToList();
 
             return View(doctors);
+
+
+
+        }
+
+        public IActionResult showAdmins()
+        {
+
+            List<AppUser> admins = Db.Users.Where(u=>u.Role=="Admin").ToList();
+
+            return View(admins);
 
 
 
