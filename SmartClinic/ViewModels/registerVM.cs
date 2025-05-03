@@ -5,7 +5,7 @@ namespace SmartClinic.ViewModels
     public class registerVM
     {
 
-
+        public string? UserId {  get; set; }
         public string Name { get; set; } 
         public string userName { get; set; }
         [DataType(dataType:DataType.EmailAddress)]
@@ -33,6 +33,7 @@ namespace SmartClinic.ViewModels
      
         public string Role {  get; set; }
 
+        public string Gender { get; set; }
         public IFormFile imageFile { get; set; }
 
 

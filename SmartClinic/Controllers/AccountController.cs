@@ -35,10 +35,24 @@ namespace SmartClinic.Controllers
         {
 
            if(ModelState.IsValid) {
-             
-                
 
-                    AppUser user = new AppUser();
+                AppUser user;
+                if (userModel.Role == "Patient")
+                {
+                user = new Patient();
+
+                }
+                else if(userModel.Role=="Doctor")
+                {
+
+                    user = new Doctor();
+
+                }
+                else
+                {
+                    user = new AppUser();
+                }
+                   
 
                     user.FullName = userModel.Name;
                     user.Email = userModel.Email;
@@ -48,6 +62,7 @@ namespace SmartClinic.Controllers
                     user.DateOfBirth = userModel.DateOfBirth;
                     user.Address = userModel.Address;
                     user.UserName = userModel.userName;
+                user.Role = userModel.Role;
                     string file;
                     if (userModel.imageFile != null)
                     {
@@ -89,8 +104,15 @@ namespace SmartClinic.Controllers
 
             }
 
-  return RedirectToAction("Home/Index");
+ if(User.IsInRole("Admin"))
+            {
 
+                return RedirectToAction("showDoctors", "Admin");
+            }
+            else
+            {
+                return View();
+            }
 
         }
 
@@ -120,9 +142,9 @@ namespace SmartClinic.Controllers
                 if (user != null)
                 {
 
-                    if (user.PasswordHash == userModel.password)
+                    if (await userManager.CheckPasswordAsync(user,userModel.password))
                     {
-                        Sign.SignInAsync(user, userModel.rememberMe);
+                     await   Sign.SignInAsync(user, userModel.rememberMe);
 
                     }
                  
@@ -155,9 +177,24 @@ namespace SmartClinic.Controllers
 
         }
 
+        public async Task< IActionResult> delUserAccount(string userId)
+        {
+            AppUser userModel = await userManager.FindByIdAsync(userId);
 
+            if (userModel != null)
+            {
 
+               await userManager.DeleteAsync(userModel);
 
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("showDoctors", "Admin");
+                }
+                return Content("the account is deleted");
+            }
 
+            return Content("user not found");
+        }
+       
     }
 }
