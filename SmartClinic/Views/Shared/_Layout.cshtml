@@ -29,17 +29,17 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
                         </li>
                        
-                        @if(User.Identity.IsAuthenticated){
+                   
                             <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="logOut">LogOut</a>
                         </li>
-                        }else{
+                 
                          <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="logIn">logIn</a>
                         </li>
 
 
-                        }
+                        
                      
                     </ul>
                 </div>

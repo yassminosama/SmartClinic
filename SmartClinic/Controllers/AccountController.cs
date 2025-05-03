@@ -35,10 +35,20 @@ namespace SmartClinic.Controllers
         {
 
            if(ModelState.IsValid) {
-             
-                
 
-                    AppUser user = new AppUser();
+                AppUser user;
+                if (userModel.Role == "Patient")
+                {
+                user = new Patient();
+
+                }
+                else
+                {
+
+                    user = new Doctor();
+
+                }
+                   
 
                     user.FullName = userModel.Name;
                     user.Email = userModel.Email;
@@ -48,6 +58,7 @@ namespace SmartClinic.Controllers
                     user.DateOfBirth = userModel.DateOfBirth;
                     user.Address = userModel.Address;
                     user.UserName = userModel.userName;
+                user.Role = userModel.Role;
                     string file;
                     if (userModel.imageFile != null)
                     {
@@ -120,9 +131,9 @@ namespace SmartClinic.Controllers
                 if (user != null)
                 {
 
-                    if (user.PasswordHash == userModel.password)
+                    if (await userManager.CheckPasswordAsync(user,userModel.password))
                     {
-                        Sign.SignInAsync(user, userModel.rememberMe);
+                     await   Sign.SignInAsync(user, userModel.rememberMe);
 
                     }
                  
@@ -154,10 +165,6 @@ namespace SmartClinic.Controllers
 
 
         }
-
-
-
-
-
+       
     }
 }

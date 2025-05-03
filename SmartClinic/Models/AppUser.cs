@@ -9,9 +9,15 @@ namespace SmartClinic.Models
         public DateTime? DateOfBirth { get; set; }
         public string? Address { get; set; }
         public string? Gender { get; set; } 
+        public string? Role {  get; set; }
         public string? ImagePath { get; set; }
         [NotMapped]
 
         public IFormFile imageFile { get; set; }
+
+
+
+
+
     }
 }
