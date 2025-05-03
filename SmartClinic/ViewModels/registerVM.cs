@@ -46,5 +46,8 @@ namespace SmartClinic.ViewModels
         public string? Specialization { get; set; }
 
         public decimal? Salary { get; set; }
+
+        public List<DateTime?> ExceptionDates { get; set; } = new List<DateTime?>();
+        public List<string?> DefaultDate { get; set; } = new List<string>();
     }
 }

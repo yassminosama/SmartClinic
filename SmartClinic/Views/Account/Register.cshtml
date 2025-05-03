@@ -52,6 +52,24 @@
         <input asp-for="Specialization" class="form-control" />
         <span asp-validation-for="Specialization" class="text-danger"></span>
     </div>
+<div class="form-group" id="defaultDateField" style="display:none;">
+    <label>Default Available Days</label><br />
+        @foreach (var day in new[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" })
+        {
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="DefaultDate" value="@day" id="day_@day" />
+                <label class="form-check-label" for="day_@day">@day</label>
+            </div>
+        }
+</div>
+
+
+<div class="form-group" id="exceptionDatesField" style="display:none;">
+    <label>Exception Dates</label>
+    <input type="date" name="ExceptionDates" class="form-control mb-2" />
+    <button type="button" class="btn btn-sm btn-secondary" onclick="addDateField('exceptionDatesField', 'ExceptionDates')">Add Another Date</button>
+</div>
+
 
     <div class="form-group">
         <label asp-for="imageFile">Upload Image</label>
@@ -74,15 +92,23 @@
 </form>
 
 @section Scripts {
-        <script>
-            document.getElementById('Role').addEventListener('change', function () {
-                if (this.value === 'Doctor') {
-                    document.getElementById('specializationField').style.display = 'block';
-                } else {
-                    document.getElementById('specializationField').style.display = 'none';
-                }
-            });
-        </script>
+    <script>
+        document.getElementById('Role').addEventListener('change', function () {
+            const isDoctor = this.value === 'Doctor';
+            document.getElementById('specializationField').style.display = isDoctor ? 'block' : 'none';
+            document.getElementById('defaultDateField').style.display = isDoctor ? 'block' : 'none';
+            document.getElementById('exceptionDatesField').style.display = isDoctor ? 'block' : 'none';
+        });
+
+        function addDateField(containerId, inputName) {
+            const container = document.getElementById(containerId);
+            const input = document.createElement("input");
+            input.type = "date";
+            input.name = inputName;
+            input.className = "form-control mb-2";
+            container.insertBefore(input, container.lastElementChild);
+        }
+    </script>
 
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

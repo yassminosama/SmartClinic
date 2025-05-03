@@ -43,6 +43,8 @@ namespace SmartClinic.Controllers
                         Address = userModel.Address,
                         UserName = userModel.UserName,
                         Specialization = userModel.Specialization,
+                        ExceptionDates = userModel.ExceptionDates,
+                        DefaultDate = userModel.DefaultDate,
                         IsAvailable = true,
                         IsDeleted = false
                     };
