@@ -1,0 +1,37 @@
+﻿@model SmartClinic.Models.Doctor
+
+@{
+    ViewData["Title"] = "Doctor Profile";
+}
+
+<h2>Your Profile</h2>
+
+<div>
+    <h3>Name: @Model.UserName</h3>
+    <p>Email: @Model.Email</p>
+    <p>Specialization: @Model.Specialization</p>
+    <p>Is Available: @(Model.IsAvailable ? "Yes" : "No")</p>
+    <p>Is Deleted: @(Model.IsDeleted ? "Yes" : "No")</p>
+
+    <h4>Exception Dates</h4>
+    <ul>
+        @foreach (var date in Model.ExceptionDates)
+        {
+            <li>@date?.ToString("dd-MM-yyyy")</li>
+        }
+    </ul>
+
+    <h4>Default Dates</h4>
+    <ul>
+        @foreach (var date in Model.DefaultDate)
+        {
+            <li>@date</li>
+        }
+    </ul>
+
+    <!-- Buttons to Edit or Delete Profile -->
+    <div>
+        <a href="@Url.Action("DoctorPEdit", "DoctorProfile")" class="btn btn-primary">Edit Profile</a>
+        <a href="@Url.Action("Delete", "DoctorProfile")" class="btn btn-danger">Delete Profile</a>
+    </div>
+</div>
