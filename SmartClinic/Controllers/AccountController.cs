@@ -46,7 +46,8 @@ namespace SmartClinic.Controllers
                         ExceptionDates = userModel.ExceptionDates,
                         DefaultDate = userModel.DefaultDate,
                         IsAvailable = true,
-                        IsDeleted = false
+                        IsDeleted = false,
+                        Description = userModel.Description
                     };
                 }
                 else if (userModel.Role == "Receptionist")
@@ -138,7 +139,7 @@ namespace SmartClinic.Controllers
                         return RedirectToAction("Index", "PatientDashboard");
 
                     if (await _userManager.IsInRoleAsync(user, "Doctor"))
-                        return RedirectToAction("Index", "DoctorDashboard");
+                        return RedirectToAction("DashDIndex", "DoctorDashboard");
 
                     return RedirectToAction("Index", "Home");
                 }
