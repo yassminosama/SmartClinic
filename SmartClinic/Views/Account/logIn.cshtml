@@ -1,58 +1,40 @@
 ﻿@model SmartClinic.ViewModels.LoginVM
 
-<<<<<<< HEAD
 @{
-    ViewData["Title"] = "logIn";
+    ViewData["Title"] = "Log In";
 }
 
-<h1>logIn</h1>
-
-<h4>LoginVM</h4>
+<h1>Log In</h1>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="logIn">
+        <form asp-action="LogIn" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
-                <label asp-for="email" class="control-label"></label>
-                <input asp-for="email" class="form-control" />
-                <span asp-validation-for="email" class="text-danger"></span>
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="password" class="control-label"></label>
-                <input asp-for="password" class="form-control" />
-                <span asp-validation-for="password" class="text-danger"></span>
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
+
             <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="rememberMe" /> @Html.DisplayNameFor(model => model.rememberMe)
-                </label>
+                <input class="form-check-input" asp-for="RememberMe" />
+                <label class="form-check-label" asp-for="RememberMe">Remember Me</label>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="log in" class="btn btn-primary" />
+                <input type="submit" value="Log In" class="btn btn-primary" />
             </div>
         </form>
-=======
-<form asp-action="LogIn" method="post">
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
->>>>>>> ae84cc30f4b0777f705b7e74ccee26b8864416da
     </div>
-
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <input asp-for="RememberMe" /> <label asp-for="RememberMe">Remember Me</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+</div>
 
 @section Scripts {
     @{

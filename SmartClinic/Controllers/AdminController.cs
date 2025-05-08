@@ -35,57 +35,59 @@ namespace SmartClinic.Controllers
 
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> addAdmin(AdminVM adminUser )
-        //{
+        [HttpPost]
+        public async Task<IActionResult> addAdmin(AdminVM adminUser)
+        {
 
 
-        //    if (ModelState.IsValid) { 
-            
-            
-        //     AppUser user=new AppUser();
-
-        //        user.Address = adminUser.Address;
-        //        user.FullName=adminUser.Name;
-        //        user.Email=adminUser.Email;
-        //            user.PhoneNumber = adminUser.PhoneNumber;
-        //        user.Gender=adminUser.Gender;
-        //        user.DateOfBirth=adminUser.DateOfBirth;
-        //        user.UserName=adminUser.userName;
-        //        user.Role = "Admin";
-        //        string filePath;
-        //        if (adminUser.imageFile != null) {
-
-        //            string file = Path.Combine(Host.WebRootPath, "Images");
-        //            filePath = Path.Combine(file, adminUser.imageFile.FileName);
-        //            user.ImagePath=adminUser.imageFile.FileName;
-        //            adminUser.imageFile.CopyTo(new FileStream(filePath, FileMode.Create));
-                
-                
-                
-                
-        //        }
-        //        IdentityResult res = await userManager.CreateAsync(user, adminUser.PassWord);
-        //        if (res.Succeeded)
-        //        {
+            if (ModelState.IsValid)
+            {
 
 
-        //          await  userManager.AddToRoleAsync(user, "Admin");
+                AppUser user = new AppUser();
 
-        //        }
+                user.Address = adminUser.Address;
+                user.FullName = adminUser.Name;
+                user.Email = adminUser.Email;
+                user.PhoneNumber = adminUser.PhoneNumber;
+                user.Gender = adminUser.Gender;
+                user.DateOfBirth = adminUser.DateOfBirth;
+                user.UserName = adminUser.userName;
+                user.Role = "Admin";
+                string filePath;
+                if (adminUser.imageFile != null)
+                {
 
-           
-            
-            
-            
-        //    }
+                    string file = Path.Combine(Host.WebRootPath, "Images");
+                    filePath = Path.Combine(file, adminUser.imageFile.FileName);
+                    user.ImagePath = adminUser.imageFile.FileName;
+                    adminUser.imageFile.CopyTo(new FileStream(filePath, FileMode.Create));
 
 
 
-        //    return View();
+
+                }
+                IdentityResult res = await userManager.CreateAsync(user, adminUser.PassWord);
+                if (res.Succeeded)
+                {
 
 
-        //}
+                    await userManager.AddToRoleAsync(user, "Admin");
+
+                }
+
+
+
+
+
+            }
+
+
+
+            return View();
+
+
+        }
         [HttpGet]
         public IActionResult createRole() {
 

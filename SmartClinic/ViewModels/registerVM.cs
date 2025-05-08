@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
 namespace SmartClinic.ViewModels
@@ -8,18 +10,13 @@ namespace SmartClinic.ViewModels
         [Required]
         public string Name { get; set; }
 
-<<<<<<< HEAD
-        public string? UserId {  get; set; }
-        public string Name { get; set; } 
-        public string userName { get; set; }
-        [DataType(dataType:DataType.EmailAddress)]
-=======
+        public string? UserId { get; set; }
+
         [Required]
         public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress)]
->>>>>>> ae84cc30f4b0777f705b7e74ccee26b8864416da
         public string Email { get; set; }
 
         [Required]
@@ -49,14 +46,16 @@ namespace SmartClinic.ViewModels
         public string Role { get; set; }
 
         public string Gender { get; set; }
+
         public IFormFile imageFile { get; set; }
 
+        // Doctor-specific fields
         public string? Specialization { get; set; }
-
-        public decimal? Salary { get; set; }
         public string? Description { get; set; }
-
         public List<DateTime?> ExceptionDates { get; set; } = new List<DateTime?>();
-        public List<string?> DefaultDate { get; set; } = new List<string>();
+        public List<string?> DefaultDate { get; set; } = new List<string?>();
+
+        // Receptionist-specific field
+        public decimal? Salary { get; set; }
     }
 }

@@ -28,171 +28,48 @@ namespace SmartClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(registerVM userModel)
         {
-<<<<<<< HEAD
-
-           if(ModelState.IsValid) {
-
-                AppUser user;
-                if (userModel.Role == "Patient")
-                {
-                user = new Patient();
-
-                }
-                else if(userModel.Role=="Doctor")
-                {
-
-                    user = new Doctor();
-
-                }
-                else
-                {
-                    user = new AppUser();
-                }
-                   
-
-                    user.FullName = userModel.Name;
-                    user.Email = userModel.Email;
-                    user.PhoneNumber = userModel.PhoneNumber;
-                   
-
-                    user.DateOfBirth = userModel.DateOfBirth;
-                    user.Address = userModel.Address;
-                    user.UserName = userModel.userName;
-                user.Role = userModel.Role;
-                    string file;
-                    if (userModel.imageFile != null)
-                    {
-                        file = Path.Combine(Hosting.WebRootPath, "Images");
-
-                        string FullPath = Path.Combine(file, userModel.imageFile.Name);
-                        user.ImagePath = userModel.imageFile.Name;
-                        userModel.imageFile.CopyTo(new FileStream(FullPath, FileMode.Create));
-
-
-
-                    }
-
-
-                    IdentityResult res = await userManager.CreateAsync(user,userModel.PassWord);
-                    if (res.Succeeded)
-                    {
-
-                        await userManager.AddToRoleAsync(user, userModel.Role);
-                    }
-                  
-
-               
-
-
-                   
-
-
-                
-
-             
-
-             
-
-
-
-
-
-
-            }
-
- if(User.IsInRole("Admin"))
-            {
-
-                return RedirectToAction("showDoctors", "Admin");
-            }
-            else
-            {
-                return View();
-            }
-
-        }
-
-
-
-        [HttpGet]
-        public IActionResult logIn()
-        {
-
-
-
-            return View();
-
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> logIn(LoginVM userModel)
-        {
-
-=======
->>>>>>> ae84cc30f4b0777f705b7e74ccee26b8864416da
             if (ModelState.IsValid)
             {
                 AppUser user;
 
-                if (userModel.Role == "Doctor")
+                switch (userModel.Role)
                 {
-<<<<<<< HEAD
-
-                    if (await userManager.CheckPasswordAsync(user,userModel.password))
-                    {
-                     await   Sign.SignInAsync(user, userModel.rememberMe);
-
-                    }
-                 
-
-
-
-=======
-                    user = new Doctor
-                    {
-                        FullName = userModel.Name,
-                        Email = userModel.Email,
-                        PhoneNumber = userModel.PhoneNumber,
-                        DateOfBirth = userModel.DateOfBirth,
-                        Address = userModel.Address,
-                        UserName = userModel.UserName,
-                        Specialization = userModel.Specialization,
-                        ExceptionDates = userModel.ExceptionDates,
-                        DefaultDate = userModel.DefaultDate,
-                        IsAvailable = true,
-                        IsDeleted = false,
-                        Description = userModel.Description
-                    };
+                    case "Doctor":
+                        user = new Doctor
+                        {
+                            Specialization = userModel.Specialization,
+                            ExceptionDates = userModel.ExceptionDates,
+                            DefaultDate = userModel.DefaultDate,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Description = userModel.Description
+                        };
+                        break;
+                    case "Receptionist":
+                        user = new Receptionist
+                        {
+                            IsDeleted = false,
+                            Salary = userModel.Salary
+                        };
+                        break;
+                    case "Patient":
+                        user = new Patient
+                        {
+                            IsDeleted = false
+                        };
+                        break;
+                    default:
+                        user = new AppUser();
+                        break;
                 }
-                else if (userModel.Role == "Receptionist")
-                {
-                    user = new Receptionist
-                    {
-                        FullName = userModel.Name,
-                        Email = userModel.Email,
-                        PhoneNumber = userModel.PhoneNumber,
-                        DateOfBirth = userModel.DateOfBirth,
-                        Address = userModel.Address,
-                        UserName = userModel.UserName,
-                        IsDeleted = false,
-                        Salary = userModel.Salary
-                    };
-                }
-                else // Default to Patient if no role is specified
-                {
-                    user = new Patient
-                    {
-                        FullName = userModel.Name,
-                        Email = userModel.Email,
-                        PhoneNumber = userModel.PhoneNumber,
-                        DateOfBirth = userModel.DateOfBirth,
-                        Address = userModel.Address,
-                        UserName = userModel.UserName,
-                        IsDeleted = false
-                    };
->>>>>>> ae84cc30f4b0777f705b7e74ccee26b8864416da
-                }
+
+                user.FullName = userModel.Name;
+                user.Email = userModel.Email;
+                user.PhoneNumber = userModel.PhoneNumber;
+                user.DateOfBirth = userModel.DateOfBirth;
+                user.Address = userModel.Address;
+                user.UserName = userModel.UserName;
+                user.Role = userModel.Role;
 
                 if (userModel.imageFile != null)
                 {
@@ -213,6 +90,10 @@ namespace SmartClinic.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, userModel.Role);
                     TempData["Success"] = "User registered successfully.";
+
+                    if (User.IsInRole("Admin"))
+                        return RedirectToAction("showDoctors", "Admin");
+
                     return RedirectToAction("LogIn");
                 }
 
@@ -231,27 +112,6 @@ namespace SmartClinic.Controllers
             return View();
         }
 
-<<<<<<< HEAD
-        public async Task< IActionResult> delUserAccount(string userId)
-        {
-            AppUser userModel = await userManager.FindByIdAsync(userId);
-
-            if (userModel != null)
-            {
-
-               await userManager.DeleteAsync(userModel);
-
-                if (User.IsInRole("Admin"))
-                {
-                    return RedirectToAction("showDoctors", "Admin");
-                }
-                return Content("the account is deleted");
-            }
-
-            return Content("user not found");
-        }
-       
-=======
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogIn(LoginVM userModel)
@@ -260,7 +120,6 @@ namespace SmartClinic.Controllers
                 return View(userModel);
 
             var user = await _userManager.FindByEmailAsync(userModel.Email);
-
             if (user != null)
             {
                 var result = await _signInManager.PasswordSignInAsync(
@@ -292,6 +151,23 @@ namespace SmartClinic.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("LogIn");
         }
->>>>>>> ae84cc30f4b0777f705b7e74ccee26b8864416da
+
+        [HttpPost]
+        public async Task<IActionResult> DelUserAccount(string userId)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("showDoctors", "Admin");
+
+                return Content("The account is deleted.");
+            }
+
+            return Content("User not found.");
+        }
     }
 }
