@@ -4,23 +4,14 @@ namespace SmartClinic.ViewModels
 {
     public class LoginVM
     {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
 
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
 
-       public string email {  get; set; }
-
-        [DataType(dataType: DataType.Password)]
-        [MinLength(10)]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$",
-       ErrorMessage = "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.")]
-        public string password { get; set; }
-
-
-
-        public bool rememberMe {  get; set; }
-
-
-
-
-
+        public bool RememberMe { get; set; }
     }
 }

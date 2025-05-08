@@ -1,5 +1,6 @@
 ﻿@model SmartClinic.ViewModels.LoginVM
 
+<<<<<<< HEAD
 @{
     ViewData["Title"] = "logIn";
 }
@@ -31,13 +32,30 @@
                 <input type="submit" value="log in" class="btn btn-primary" />
             </div>
         </form>
+=======
+<form asp-action="LogIn" method="post">
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+>>>>>>> ae84cc30f4b0777f705b7e74ccee26b8864416da
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input asp-for="RememberMe" /> <label asp-for="RememberMe">Remember Me</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

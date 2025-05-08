@@ -7,7 +7,7 @@ namespace SmartClinic.Models
         [Key]
         public int BillId { get; set; }
         public string PatientId { get; set; }
-        public string ReceptionistId { get; set; }
+        public string? ReceptionistId { get; set; }
         public int AppointmentId { get; set; }
         public decimal Amount { get; set; }
         public DateTime BillDate { get; set; }
