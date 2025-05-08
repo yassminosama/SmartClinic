@@ -11,9 +11,15 @@ namespace SmartClinic.Models
             public bool IsAvailable { get; set; } = true;
             public bool IsDeleted { get; set; } = false;
 
-            // Navigation properties
-            public ICollection<Appointment> Appointments { get; set; }
-            public ICollection<Prescription> Prescriptions { get; set; }
+           [MaxLength(500)]
+           public string? Description { get; set; }
+
+        
+          public string? PhotoUrl { get; set; }
+
+        // Navigation properties
+        public ICollection<Appointment> Appointments { get; set; }
+        public ICollection<Prescription> Prescriptions { get; set; }
         public ICollection<Receptionist> Receptionists { get; set; }
     }
 

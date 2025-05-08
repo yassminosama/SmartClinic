@@ -1,116 +1,160 @@
 ﻿@model SmartClinic.ViewModels.registerVM
 
-<form asp-action="Register" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
+@{
+    ViewData["Title"] = "Register";
+}
 
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+<h1>Register</h1>
+<hr />
 
-    <div class="form-group">
-        <label asp-for="PhoneNumber"></label>
-        <input asp-for="PhoneNumber" class="form-control" />
-        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-    </div>
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Register" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <div class="form-group">
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" class="form-control" />
-        <span asp-validation-for="UserName" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="DateOfBirth"></label>
-        <input asp-for="DateOfBirth" type="date" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
-        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Address"></label>
-        <input asp-for="Address" class="form-control" />
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Role"></label>
-        <select asp-for="Role" class="form-control">
-            <option value="">-- Select Role --</option>
-            <option value="Patient">Patient</option>
-            <option value="Doctor">Doctor</option>
-        </select>
-        <span asp-validation-for="Role" class="text-danger"></span>
-    </div>
-
-    <div class="form-group" id="specializationField" style="display:none;">
-        <label asp-for="Specialization"></label>
-        <input asp-for="Specialization" class="form-control" />
-        <span asp-validation-for="Specialization" class="text-danger"></span>
-    </div>
-<div class="form-group" id="defaultDateField" style="display:none;">
-    <label>Default Available Days</label><br />
-        @foreach (var day in new[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" })
-        {
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" name="DefaultDate" value="@day" id="day_@day" />
-                <label class="form-check-label" for="day_@day">@day</label>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-        }
+
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DateOfBirth" class="control-label"></label>
+                <input asp-for="DateOfBirth" type="date" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PassWord" class="control-label"></label>
+                <input asp-for="PassWord" class="form-control" />
+                <span asp-validation-for="PassWord" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmPassWord" class="control-label"></label>
+                <input asp-for="ConfirmPassWord" class="form-control" />
+                <span asp-validation-for="ConfirmPassWord" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Role">Select Role:</label>
+                <select asp-for="Role" class="form-control" id="Role">
+                    <option value="Patient">Patient</option>
+                    <option value="Doctor">Doctor</option>
+                    @if (User.IsInRole("Admin"))
+                    {
+                            <option value="Admin">Admin</option>
+                    }
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Gender">Select Gender:</label>
+                <select asp-for="Gender" class="form-control">
+                    <option selected value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="specializationField" style="display:none;">
+                <label asp-for="Specialization"></label>
+                <input asp-for="Specialization" class="form-control" />
+                <span asp-validation-for="Specialization" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" id="descriptionField" style="display:none;">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" id="defaultDateField" style="display:none;">
+                <label>Default Available Days</label><br />
+                @foreach (var day in new[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" })
+                {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="DefaultDate" value="@day" id="day_@day" />
+                            <label class="form-check-label" for="day_@day">@day</label>
+                        </div>
+                }
+            </div>
+
+            <div class="form-group" id="exceptionDatesField" style="display:none;">
+                <label>Exception Dates</label>
+                <input type="date" name="ExceptionDates" class="form-control mb-2" />
+                <button type="button" class="btn btn-sm btn-secondary" onclick="addDateField('exceptionDatesField', 'ExceptionDates')">Add Another Date</button>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="imageFile">Upload Image</label>
+                <input asp-for="imageFile" type="file" class="form-control" onchange="previewImage(event)" />
+                <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 200px; margin-top: 10px;" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
 </div>
-
-
-<div class="form-group" id="exceptionDatesField" style="display:none;">
-    <label>Exception Dates</label>
-    <input type="date" name="ExceptionDates" class="form-control mb-2" />
-    <button type="button" class="btn btn-sm btn-secondary" onclick="addDateField('exceptionDatesField', 'ExceptionDates')">Add Another Date</button>
-</div>
-
-
-    <div class="form-group">
-        <label asp-for="imageFile">Upload Image</label>
-        <input asp-for="imageFile" type="file" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PassWord"></label>
-        <input asp-for="PassWord" class="form-control" />
-        <span asp-validation-for="PassWord" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ConfirmPassWord"></label>
-        <input asp-for="ConfirmPassWord" class="form-control" />
-        <span asp-validation-for="ConfirmPassWord" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
 
 @section Scripts {
-    <script>
-        document.getElementById('Role').addEventListener('change', function () {
-            const isDoctor = this.value === 'Doctor';
-            document.getElementById('specializationField').style.display = isDoctor ? 'block' : 'none';
-            document.getElementById('defaultDateField').style.display = isDoctor ? 'block' : 'none';
-            document.getElementById('exceptionDatesField').style.display = isDoctor ? 'block' : 'none';
-        });
+        <script>
+            document.getElementById('Role').addEventListener('change', function () {
+                const isDoctor = this.value === 'Doctor';
+                document.getElementById('specializationField').style.display = isDoctor ? 'block' : 'none';
+                document.getElementById('defaultDateField').style.display = isDoctor ? 'block' : 'none';
+                document.getElementById('exceptionDatesField').style.display = isDoctor ? 'block' : 'none';
+                document.getElementById('descriptionField').style.display = isDoctor ? 'block' : 'none';
+            });
 
-        function addDateField(containerId, inputName) {
-            const container = document.getElementById(containerId);
-            const input = document.createElement("input");
-            input.type = "date";
-            input.name = inputName;
-            input.className = "form-control mb-2";
-            container.insertBefore(input, container.lastElementChild);
-        }
-    </script>
+            function addDateField(containerId, inputName) {
+                const container = document.getElementById(containerId);
+                const input = document.createElement("input");
+                input.type = "date";
+                input.name = inputName;
+                input.className = "form-control mb-2";
+                container.insertBefore(input, container.lastElementChild);
+            }
 
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+            function previewImage(event) {
+                const input = event.target;
+                const preview = document.getElementById('imagePreview');
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        </script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

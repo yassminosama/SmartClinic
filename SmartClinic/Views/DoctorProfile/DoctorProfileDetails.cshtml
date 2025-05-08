@@ -1,0 +1,77 @@
+﻿@model SmartClinic.Models.Doctor
+
+<h2 class="mt-4 mb-4">Doctor Profile</h2>
+
+<div class="doctor-profile d-flex gap-4">
+    <div>
+        @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+        {
+            <img src="@Model.PhotoUrl" alt="Doctor Photo" style="max-width: 200px;" />
+        }
+        else
+        {
+            <p>No photo available.</p>
+        }
+
+    </div>
+
+    <div>
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Full Name:</strong> @Model.FullName</li>
+            <li class="list-group-item"><strong>Email:</strong> @Model.Email</li>
+            <li class="list-group-item"><strong>Username:</strong> @Model.UserName</li>
+            <li class="list-group-item"><strong>Phone:</strong> @Model.PhoneNumber</li>
+            <li class="list-group-item"><strong>Date of Birth:</strong> @Model.DateOfBirth?.ToShortDateString()</li>
+            <li class="list-group-item"><strong>Address:</strong> @Model.Address</li>
+            <li class="list-group-item"><strong>Specialization:</strong> @Model.Specialization</li>
+
+            <li class="list-group-item">
+                <strong>Description:</strong>
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    @Model.Description
+                }
+                else
+                {
+                    <em>No description provided yet.</em>
+                }
+            </li>
+
+            <li class="list-group-item"><strong>Available:</strong> @(Model.IsAvailable ? "Yes" : "No")</li>
+
+            <li class="list-group-item">
+                <strong>Exception Dates:</strong><br />
+                @if (Model.ExceptionDates != null && Model.ExceptionDates.Any())
+                {
+                    foreach (var date in Model.ExceptionDates)
+                    {
+                        <span>@date?.ToShortDateString()</span>
+
+                        <br />
+                    }
+                }
+                else
+                {
+                    <em>None</em>
+                }
+            </li>
+
+            <li class="list-group-item">
+                <strong>Default Available Days:</strong><br />
+                @if (Model.DefaultDate != null && Model.DefaultDate.Any())
+                {
+                    foreach (var date in Model.DefaultDate)
+                    {
+                        <span>@date</span>
+
+                        <br />
+                    }
+                }
+                else
+                {
+                    <em>None</em>
+                }
+            </li>
+        </ul>
+    </div>
+</div>

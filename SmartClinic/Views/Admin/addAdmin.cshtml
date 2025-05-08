@@ -1,0 +1,85 @@
+﻿@model SmartClinic.ViewModels.AdminVM
+
+@{
+    ViewData["Title"] = "addAdmin";
+}
+
+<h1>addAdmin</h1>
+
+<h4>AdminVM</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="addAdmin"  enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="userName" class="control-label"></label>
+                <input asp-for="userName" class="form-control" />
+                <span asp-validation-for="userName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfBirth" class="control-label"></label>
+                <input asp-for="DateOfBirth" class="form-control" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PassWord" class="control-label"></label>
+                <input asp-for="PassWord" class="form-control" />
+                <span asp-validation-for="PassWord" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassWord" class="control-label"></label>
+                <input asp-for="ConfirmPassWord" class="form-control" />
+                <span asp-validation-for="ConfirmPassWord" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Gender">Select Gender:</label>
+                <br />
+
+                <select asp-for="Gender" class="form-control">
+                    <option selected value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="imageFile">add photo</label>
+                <input asp-for="imageFile" rows="4">
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create Admin Account" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

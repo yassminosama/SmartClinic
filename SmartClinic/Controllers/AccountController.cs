@@ -32,50 +32,44 @@ namespace SmartClinic.Controllers
             {
                 AppUser user;
 
-                if (userModel.Role == "Doctor")
+                switch (userModel.Role)
                 {
-                    user = new Doctor
-                    {
-                        FullName = userModel.Name,
-                        Email = userModel.Email,
-                        PhoneNumber = userModel.PhoneNumber,
-                        DateOfBirth = userModel.DateOfBirth,
-                        Address = userModel.Address,
-                        UserName = userModel.UserName,
-                        Specialization = userModel.Specialization,
-                        ExceptionDates = userModel.ExceptionDates,
-                        DefaultDate = userModel.DefaultDate,
-                        IsAvailable = true,
-                        IsDeleted = false
-                    };
+                    case "Doctor":
+                        user = new Doctor
+                        {
+                            Specialization = userModel.Specialization,
+                            ExceptionDates = userModel.ExceptionDates,
+                            DefaultDate = userModel.DefaultDate,
+                            IsAvailable = true,
+                            IsDeleted = false,
+                            Description = userModel.Description
+                        };
+                        break;
+                    case "Receptionist":
+                        user = new Receptionist
+                        {
+                            IsDeleted = false,
+                            Salary = userModel.Salary
+                        };
+                        break;
+                    case "Patient":
+                        user = new Patient
+                        {
+                            IsDeleted = false
+                        };
+                        break;
+                    default:
+                        user = new AppUser();
+                        break;
                 }
-                else if (userModel.Role == "Receptionist")
-                {
-                    user = new Receptionist
-                    {
-                        FullName = userModel.Name,
-                        Email = userModel.Email,
-                        PhoneNumber = userModel.PhoneNumber,
-                        DateOfBirth = userModel.DateOfBirth,
-                        Address = userModel.Address,
-                        UserName = userModel.UserName,
-                        IsDeleted = false,
-                        Salary = userModel.Salary
-                    };
-                }
-                else // Default to Patient if no role is specified
-                {
-                    user = new Patient
-                    {
-                        FullName = userModel.Name,
-                        Email = userModel.Email,
-                        PhoneNumber = userModel.PhoneNumber,
-                        DateOfBirth = userModel.DateOfBirth,
-                        Address = userModel.Address,
-                        UserName = userModel.UserName,
-                        IsDeleted = false
-                    };
-                }
+
+                user.FullName = userModel.Name;
+                user.Email = userModel.Email;
+                user.PhoneNumber = userModel.PhoneNumber;
+                user.DateOfBirth = userModel.DateOfBirth;
+                user.Address = userModel.Address;
+                user.UserName = userModel.UserName;
+                user.Role = userModel.Role;
 
                 if (userModel.imageFile != null)
                 {
@@ -96,6 +90,10 @@ namespace SmartClinic.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, userModel.Role);
                     TempData["Success"] = "User registered successfully.";
+
+                    if (User.IsInRole("Admin"))
+                        return RedirectToAction("showDoctors", "Admin");
+
                     return RedirectToAction("LogIn");
                 }
 
@@ -122,7 +120,6 @@ namespace SmartClinic.Controllers
                 return View(userModel);
 
             var user = await _userManager.FindByEmailAsync(userModel.Email);
-
             if (user != null)
             {
                 var result = await _signInManager.PasswordSignInAsync(
@@ -138,7 +135,7 @@ namespace SmartClinic.Controllers
                         return RedirectToAction("Index", "PatientDashboard");
 
                     if (await _userManager.IsInRoleAsync(user, "Doctor"))
-                        return RedirectToAction("Index", "DoctorDashboard");
+                        return RedirectToAction("DashDIndex", "DoctorDashboard");
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -153,6 +150,24 @@ namespace SmartClinic.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("LogIn");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DelUserAccount(string userId)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("showDoctors", "Admin");
+
+                return Content("The account is deleted.");
+            }
+
+            return Content("User not found.");
         }
     }
 }
