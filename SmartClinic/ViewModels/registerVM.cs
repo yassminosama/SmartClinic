@@ -8,11 +8,18 @@ namespace SmartClinic.ViewModels
         [Required]
         public string Name { get; set; }
 
+<<<<<<< HEAD
+        public string? UserId {  get; set; }
+        public string Name { get; set; } 
+        public string userName { get; set; }
+        [DataType(dataType:DataType.EmailAddress)]
+=======
         [Required]
         public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress)]
+>>>>>>> ae84cc30f4b0777f705b7e74ccee26b8864416da
         public string Email { get; set; }
 
         [Required]
@@ -41,6 +48,7 @@ namespace SmartClinic.ViewModels
         [Required]
         public string Role { get; set; }
 
+        public string Gender { get; set; }
         public IFormFile imageFile { get; set; }
 
         public string? Specialization { get; set; }
