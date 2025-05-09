@@ -202,6 +202,66 @@ public class AppointmentController : Controller
     }
 
 
+    [HttpPost]
+    public async Task<IActionResult> StartPayment(int appointmentId)
+    {
+        var patient = await userManager.GetUserAsync(User) as Patient;
+        if (patient == null)
+            return RedirectToAction("Login", "Account");
+
+        var bill = await _context.Bills
+            .Include(b => b.Appointment)
+            .FirstOrDefaultAsync(b => b.AppointmentId == appointmentId && b.PatientId == patient.Id);
+
+        if (bill == null || bill.IsPayed)
+        {
+            TempData["Error"] = "Invalid or already paid bill.";
+            return RedirectToAction("MyAppointments");
+        }
+
+        // بناء رابط الدفع إلى PayPal (مثال)
+        string paypalUrl = $"https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_xclick&business=sb-hinog35178331@personal.example.com" +
+                           $"&item_name=Clinic+Appointment&amount={bill.Amount}" +
+                           $"&currency_code=USD&return={Url.Action("PaymentSuccess", "Appointment", new { id = bill.BillId }, Request.Scheme)}" +
+                           $"&cancel_return={Url.Action("MyAppointments", "Appointment", null, Request.Scheme)}";
+
+        return Redirect(paypalUrl);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> PaymentSuccess(int id)
+    {
+        var bill = await _context.Bills.FindAsync(id);
+        if (bill == null || bill.IsPayed)
+        {
+            TempData["Error"] = "Bill not found or already paid.";
+            return RedirectToAction("MyAppointments");
+        }
+
+        bill.IsPayed = true;
+        bill.PaymentDate = DateTime.Now;
+        await _context.SaveChangesAsync();
+
+        TempData["Success"] = "Payment completed successfully.";
+        return RedirectToAction("MyAppointments");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> MarkAsPaid(int appointmentId)
+    {
+        var bill = await _context.Bills
+            .FirstOrDefaultAsync(b => b.AppointmentId == appointmentId);
+
+        if (bill == null)
+            return NotFound();
+
+        bill.IsPayed = true;
+        bill.PaymentDate = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
 
 
 }
