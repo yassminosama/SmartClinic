@@ -1,0 +1,65 @@
+﻿@using SmartClinic.ViewModels
+@model MedicalHistoryVM
+
+@{
+    ViewData["Title"] = "Medical History Details";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Medical History</h2>
+
+    <ul class="nav nav-tabs" id="medicalTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="diagnoses-tab" data-bs-toggle="tab" data-bs-target="#diagnoses" type="button" role="tab" aria-controls="diagnoses" aria-selected="true">
+                Diagnoses
+            </button>
+        </li>
+        <!-- Tabs for future features -->
+        <li class="nav-item" role="presentation">
+            <button class="nav-link disabled" type="button">Surgeries</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link disabled" type="button">Medications</button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3" id="medicalTabsContent">
+        <!-- Diagnoses Tab -->
+        <div class="tab-pane fade show active" id="diagnoses" role="tabpanel" aria-labelledby="diagnoses-tab">
+            @if (Model.Diagnoses.Any())
+            {
+                <div class="row">
+                    @for (int i = 0; i < Model.Diagnoses.Count; i++)
+                    {
+                        var entry = Model.Diagnoses[i];
+                        <div class="col-md-6">
+                            <div class="card mb-4 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Diagnosis @((i + 1))</h5>
+                                    <p><strong>Date:</strong> @entry.Date?.ToString("yyyy-MM-dd")</p>
+                                    <p><strong>Diagnosis:</strong> @entry.Diagnosis</p>
+                                    <p><strong>Notes:</strong> @entry.Notes</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">No diagnoses recorded.</div>
+            }
+        </div>
+
+        <!-- Future tabs (empty or disabled for now) -->
+        <div class="tab-pane fade" id="surgeries" role="tabpanel" aria-labelledby="surgeries-tab">
+            <div class="alert alert-secondary">Surgeries data coming soon...</div>
+        </div>
+        <div class="tab-pane fade" id="medications" role="tabpanel" aria-labelledby="medications-tab">
+            <div class="alert alert-secondary">Medications data coming soon...</div>
+        </div>
+    </div>
+
+    <a href="@Url.Action("CreateOrEdit", "PMedicalHistory")" class="btn btn-primary mt-4">Edit Medical History</a>
+</div>
+

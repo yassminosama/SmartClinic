@@ -1,0 +1,70 @@
+﻿@using SmartClinic.ViewModels;
+@model MedicalHistoryVM
+
+@{
+    ViewData["Title"] = "Medical History";
+}
+
+<h2>Medical History</h2>
+
+<form asp-action="SaveMedicalHistory" method="post">
+    <div id="diagnosis-container">
+        @for (int i = 0; i < Model.Diagnoses.Count; i++)
+        {
+            <div class="diagnosis-entry border p-3 mb-3">
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" name="Diagnoses[@i].Date" value="@Model.Diagnoses[i].Date?.ToString("yyyy-MM-dd")" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Diagnosis</label>
+                    <input type="text" name="Diagnoses[@i].Diagnosis" value="@Model.Diagnoses[i].Diagnosis" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <input type="text" name="Diagnoses[@i].Notes" value="@Model.Diagnoses[i].Notes" class="form-control" />
+                </div>
+                <button type="button" class="btn btn-danger mt-2" onclick="removeDiagnosis(this)">Remove</button>
+            </div>
+        }
+    </div>
+
+    <button type="button" class="btn btn-secondary" onclick="addDiagnosis()">Add Diagnosis</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+    <script>
+        var index = @Model.Diagnoses.Count;
+
+        function addDiagnosis() {
+            var container = document.getElementById("diagnosis-container");
+            var div = document.createElement("div");
+            div.className = "diagnosis-entry border p-3 mb-3";
+            div.innerHTML = `
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" name="Diagnoses[${index}].Date" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Diagnosis</label>
+                    <input type="text" name="Diagnoses[${index}].Diagnosis" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <input type="text" name="Diagnoses[${index}].Notes" class="form-control" />
+                </div>
+                <button type="button" class="btn btn-danger mt-2" onclick="removeDiagnosis(this)">Remove</button>
+            `;
+            container.appendChild(div);
+            index++;
+        }
+
+        function removeDiagnosis(button) {
+            var entry = button.closest(".diagnosis-entry");
+            if (entry) {
+                entry.remove();
+            }
+        }
+    </script>
+}
