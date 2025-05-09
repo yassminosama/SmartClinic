@@ -6,12 +6,16 @@ namespace SmartClinic.Models
     {
         [Key]
         public int AppointmentId { get; set; }
-        public string PatientId { get; set; }
+        public string? PatientId { get; set; }
         public string DoctorId { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string Status { get; set; } = "Scheduled";
         public bool IsDeleted { get; set; } = false;
         public DateTime CreatedAt { get; set; }
+
+        // Fields for guest patients
+        public string? GuestName { get; set; }
+        public string? GuestPhone { get; set; }
 
         // Navigation properties
         public Patient Patient { get; set; }

@@ -1,0 +1,86 @@
+﻿@model SmartClinic.ViewModels.ReceptionistDashboardVM  
+
+<h1>Welcome, @Model.User.FullName</h1>  
+<p>Role: Receptionist</p>  
+
+<h2>Appointments</h2>  
+<table class="table">  
+    <thead>  
+        <tr>  
+            <th>Patient Name</th>  
+            <th>Doctor Name</th>  
+            <th>Time Left</th>  
+            <th>Status</th>  
+            <th>Bill Status</th>  
+        </tr>  
+    </thead>  
+    <tbody>  
+        @foreach (var appointment in Model.Appointments)  
+        {
+            <tr>  
+                @if (appointment.PatientName == null)
+                {
+                    <td>@appointment.GuestName</td>
+                }
+                else
+                {
+                    <td>@appointment.PatientName</td>
+                }
+                 
+                <td>@appointment.DoctorName</td>  
+                <td>@appointment.TimeLeft</td>  
+                <td>@appointment.Status</td>  
+                <td>@appointment.BillStatus
+                    @if (appointment.BillStatus == "Not Paid")
+                    {
+                        <form asp-action="MarkBillAsPaid" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="billId" value="@appointment.BillId" />
+                            <button type="submit" class="btn btn-success btn-sm">Mark as Paid</button>
+                        </form>
+                    }
+                
+                </td>
+                <td>
+                    @if (appointment.TimeLeft == "Entered" && appointment.Status != "Entered")
+                    {
+                        <form asp-action="MarkAsEntered" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="appointmentId" value="@appointment.AppointmentId" />
+                            <button type="submit" class="btn btn-warning">Mark as Entered</button>
+                        </form>
+                    }
+                </td>
+            </tr>  
+        }  
+    </tbody>  
+</table>
+<h3>Create Guest Appointment</h3>
+<form asp-action="CreateGuestAppointment" method="post">
+    @Html.AntiForgeryToken() <!-- EDIT: CSRF protection -->
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <label for="guestName">Guest Name</label>
+        <input type="text" id="guestName" name="guestName" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="guestPhone">Guest Phone</label>
+        <input type="text" id="guestPhone" name="guestPhone" class="form-control" required />
+        @Html.ValidationMessage("guestName", "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <label for="doctorId">Doctor</label>
+        <select id="doctorId" name="doctorId" class="form-control" required>
+            @foreach (var doctor in Model.Doctors) 
+            {
+                <option value="@doctor.Id">@doctor.FullName</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="appointmentDate">Appointment Date</label>
+        <input type="datetime-local" id="appointmentDate" name="appointmentDate" class="form-control" required />
+            value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Create Appointment</button>
+</form>
