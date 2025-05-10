@@ -9,6 +9,9 @@
         public string Status { get; set; }
         public string BillStatus { get; set; }
         public int? BillId { get; set; }
+
         public string GuestName { get; set; }
+
+        public DateTime AppointmentDate { get; set; }
     }
 }

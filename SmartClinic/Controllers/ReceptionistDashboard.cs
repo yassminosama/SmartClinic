@@ -37,7 +37,8 @@ namespace SmartClinic.Controllers
                 .Select(a => new AppointmentViewModel
                 {
                     AppointmentId = a.AppointmentId,
-                    PatientName = a.Patient.FullName,
+                    PatientName = a.PatientId == null ? null : a.Patient.FullName,
+                    GuestName = a.GuestName,
                     DoctorName = a.Doctor.FullName,
                     TimeLeft = a.AppointmentDate > DateTime.Now
                         ? (a.AppointmentDate - DateTime.Now).ToString(@"hh\:mm\:ss")

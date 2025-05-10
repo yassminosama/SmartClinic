@@ -1,0 +1,25 @@
+﻿@model List<SmartClinic.ViewModels.AppointmentViewModel>
+
+<h2>Your Appointments</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Status</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var appt in Model)
+        {
+            <tr>
+                <td>@appt.PatientName</td>
+                <td>@appt.AppointmentDate.ToString("g")</td> <!-- Formats as date & time -->
+                <td>@appt.Status</td>
+
+            </tr>
+        }
+    </tbody>
+</table>
