@@ -1,0 +1,36 @@
+﻿@using SmartClinic.Models
+@model List<SmartClinic.Models.Report>
+@{
+    ViewData["Title"] = "My Reports";
+}
+
+<h2>My Uploaded Reports</h2>
+
+@if (!Model.Any())
+{
+    <p>No reports uploaded yet.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Attachment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in Model)
+            {
+                <tr>
+                    <td>@report.ReportDate.ToString("yyyy-MM-dd")</td>
+                    <td>@report.Description</td>
+                    <td>
+                        <a href="~/reports/@report.Attachment" target="_blank">View File</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

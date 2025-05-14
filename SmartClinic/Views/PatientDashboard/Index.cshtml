@@ -1,19 +1,89 @@
 ﻿@{
     ViewData["Title"] = "Patient Dashboard";
 }
-<li class="nav-item">
-    <a class="nav-link" asp-controller="Appointment" asp-action="MyAppointments">My Appointments</a>
-</li>
 
+<!-- Dashboard Header -->
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2 class="display-5 fw-bold text-primary">👋 Welcome to Your Dashboard</h2>
+        <p class="lead text-secondary">Manage your health records, appointments, and more all in one place.</p>
+    </div>
 
-<h2>Welcome to Your Dashboard</h2>
+    <!-- Dashboard Cards -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col">
+            <a asp-controller="PatientProfile" asp-action="Index" class="text-decoration-none">
+                <div class="card shadow-sm h-100 text-center hover-card">
+                    <div class="card-body">
+                        <h5 class="card-title">👤 View Profile</h5>
+                        <p class="card-text text-muted">Check and update your personal information.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
 
-<ul>
-    <li><a asp-controller="PatientProfile" asp-action="Index">👤 View Profile</a></li>
-    <li><a asp-controller="Appointment" asp-action="Book">📅 Book Appointment</a></li>
-    <li><a asp-controller="PMedicalHistory" asp-action="CreateOrEdit">📝 Write Medical History</a></li>
-    <li><a asp-controller="Report" asp-action="Upload">📤 Upload Reports</a></li>
-    <li><a asp-controller="Prescription" asp-action="View">💊 View Prescriptions</a></li>
-@*     <li><a asp-controller="Bill" asp-action="List">💵 View Bills</a></li>
- *@    @* <li><a asp-controller="Bill" asp-action="Pay">💳 Pay Bills</a></li> *@
-</ul>
+        <div class="col">
+            <a asp-controller="Appointment" asp-action="Book" class="text-decoration-none">
+                <div class="card shadow-sm h-100 text-center hover-card">
+                    <div class="card-body">
+                        <h5 class="card-title">📅 Book Appointment</h5>
+                        <p class="card-text text-muted">Schedule a visit with your doctor easily.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a asp-controller="Appointment" asp-action="MyAppointments" class="text-decoration-none">
+                <div class="card shadow-sm h-100 text-center hover-card">
+                    <div class="card-body">
+                        <h5 class="card-title">📖 My Appointments</h5>
+                        <p class="card-text text-muted">View and manage your scheduled appointments.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a asp-controller="PMedicalHistory" asp-action="CreateOrEdit" class="text-decoration-none">
+                <div class="card shadow-sm h-100 text-center hover-card">
+                    <div class="card-body">
+                        <h5 class="card-title">📝 Write Medical History</h5>
+                        <p class="card-text text-muted">Document your medical background securely.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a asp-controller="Report" asp-action="Upload" class="text-decoration-none">
+                <div class="card shadow-sm h-100 text-center hover-card">
+                    <div class="card-body">
+                        <h5 class="card-title">📤 Upload Reports</h5>
+                        <p class="card-text text-muted">Upload lab results and reports.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a asp-controller="Prescription" asp-action="View" class="text-decoration-none">
+                <div class="card shadow-sm h-100 text-center hover-card">
+                    <div class="card-body">
+                        <h5 class="card-title">💊 View Prescriptions</h5>
+                        <p class="card-text text-muted">Check your medications and dosage.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS for Hover Effect -->
+<style>
+    .hover-card:hover {
+        transform: translateY(-5px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+</style>
