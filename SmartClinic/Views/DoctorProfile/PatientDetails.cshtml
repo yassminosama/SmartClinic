@@ -1,0 +1,66 @@
+﻿@using SmartClinic.Models
+@model SmartClinic.ViewModels.PatientDetailsVM
+
+<div class="container mt-4">
+    <h2 class="text-primary">👤 Patient Profile</h2>
+    <div class="card mb-4 p-3 shadow-sm">
+        <h5>@Model.Patient.FullName</h5>
+        <p><strong>Email:</strong> @Model.Patient.Email</p>
+        <p><strong>Date of Birth:</strong> @Model.Patient.DateOfBirth?.ToShortDateString()</p>
+        <p><strong>Gender:</strong> @Model.Patient.Gender</p>
+    </div>
+
+    <h4 class="text-success">📋 Medical History</h4>
+    @if (Model.MedicalHistory?.Diagnoses?.Count > 0)
+    {
+        <ul class="list-group mb-4">
+            @for (int i = 0; i < Model.MedicalHistory.Diagnoses.Count; i++)
+            {
+                <li class="list-group-item">
+                    <strong>Date:</strong> @Model.MedicalHistory.DiagnosesDate?.ToShortDateString() <br />
+                    <strong>Diagnosis:</strong> @Model.MedicalHistory.Diagnoses[i] <br />
+                    <strong>Notes:</strong> @Model.MedicalHistory.Notes.ElementAtOrDefault(i)
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">No medical history available.</p>
+    }
+
+    <h4 class="text-info">📎 Reports</h4>
+    @if (Model.Reports.Any())
+    {
+        <table class="table table-bordered table-striped shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Attachment</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var report in Model.Reports)
+                {
+                    <tr>
+                        <td>@report.ReportDate.ToShortDateString()</td>
+                        <td>@report.Description</td>
+                        <td>
+                            <a href="@report.Attachment" target="_blank" class="btn btn-sm btn-outline-primary me-2">
+                                👁️ View
+                            </a>
+                            <a href="@report.Attachment" download class="btn btn-sm btn-outline-success">
+                                ⬇️ Download
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">No reports available.</p>
+    }
+</div>

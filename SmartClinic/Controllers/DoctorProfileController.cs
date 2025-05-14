@@ -159,6 +159,7 @@ namespace SmartClinic.Controllers
             {
                 AppointmentId = a.AppointmentId,
                 AppointmentDate = a.AppointmentDate,
+                PatientId = a.PatientId,
                 PatientName = a.Patient != null ? a.Patient.FullName : a.GuestName,
                 GuestName = a.GuestName,
                 DoctorName = doctor.FullName,
@@ -172,6 +173,37 @@ namespace SmartClinic.Controllers
 
             return View(appointmentViewModels);
         }
+
+
+
+        //كود ياسمين
+
+
+        public async Task<IActionResult> PatientDetails(string patientId)
+        {
+            if (string.IsNullOrEmpty(patientId)) return NotFound();
+
+            var patient = await _context.Patients.FindAsync(patientId);
+            if (patient == null) return NotFound();
+
+            var history = await _context.MedicalHistories
+                .FirstOrDefaultAsync(h => h.PatientId == patientId && !h.IsDeleted);
+
+            var reports = await _context.Reports
+                .Where(r => r.PatientId == patientId && !r.IsDeleted)
+                .OrderByDescending(r => r.ReportDate)
+                .ToListAsync();
+
+            var vm = new PatientDetailsVM
+            {
+                Patient = patient,
+                MedicalHistory = history,
+                Reports = reports
+            };
+
+            return View(vm);
+        }
+
 
     }
 }
