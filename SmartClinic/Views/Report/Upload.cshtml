@@ -1,25 +1,28 @@
 ﻿@using SmartClinic.Models
-@model SmartClinic.Models.Report
+@model SmartClinic.ViewModels.ReportUploadVM
+
 @{
     ViewData["Title"] = "Upload Report";
 }
 
-<h2>Upload Report</h2>
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Upload Medical Report</h2>
+    <form asp-action="Upload" method="post" enctype="multipart/form-data" class="shadow p-4 rounded bg-light">
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <input asp-for="Description" class="form-control" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
 
-<form asp-action="Upload" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label>Description</label>
-        <input asp-for="Description" class="form-control" />
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="File" class="form-label"></label>
+            <input asp-for="File" type="file" class="form-control" />
+            <span asp-validation-for="File" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label>Select Report File (PDF, Image, etc.)</label>
-        <input type="file" name="ReportFile" class="form-control" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">Upload</button>
-</form>
+        <button type="submit" class="btn btn-success">Upload</button>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

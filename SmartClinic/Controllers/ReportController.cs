@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.Data;
 using SmartClinic.Models;
+using SmartClinic.ViewModels;
+using System.Security.Claims;
 
 namespace SmartClinic.Controllers
 {
@@ -11,64 +12,75 @@ namespace SmartClinic.Controllers
     public class ReportController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<AppUser> _userManager;
         private readonly IWebHostEnvironment _env;
 
-        public ReportController(ApplicationDbContext context, UserManager<AppUser> userManager, IWebHostEnvironment env)
+        public ReportController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
-            _userManager = userManager;
             _env = env;
         }
 
-        [HttpGet]
-        public IActionResult Upload()
+        public async Task<IActionResult> Upload()
         {
-            return View();
+            return View(new ReportUploadVM());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upload(Report model, IFormFile ReportFile)
+        public async Task<IActionResult> Upload(ReportUploadVM model)
         {
-            if (!ModelState.IsValid || ReportFile == null)
+            if (!ModelState.IsValid)
                 return View(model);
 
-            var user = await _userManager.GetUserAsync(User);
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == user.Id);
+            var patientId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (patient == null) return NotFound();
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.File.FileName);
+            var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "reports");
 
-            // Save file to wwwroot/reports
-            var uploadsFolder = Path.Combine(_env.WebRootPath, "reports");
-            Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
 
-            var fileName = Guid.NewGuid() + Path.GetExtension(ReportFile.FileName);
-            var filePath = Path.Combine(uploadsFolder, fileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            var filePath = Path.Combine(uploadPath, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await ReportFile.CopyToAsync(fileStream);
+                await model.File.CopyToAsync(stream);
             }
 
-            model.Attachment = fileName;
-            model.PatientId = patient.Id;
-            model.ReportDate = DateTime.Now;
+            var report = new Report
+            {
+                PatientId = patientId,
+                ReportDate = DateTime.Now,
+                Description = model.Description,
+                Attachment = "/uploads/reports/" + fileName
+            };
 
-            _context.Reports.Add(model);
+            _context.Reports.Add(report);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("MyReports");
         }
 
-        [HttpGet]
         public async Task<IActionResult> MyReports()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var patientId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var reports = await _context.Reports
-                .Where(r => r.PatientId == user.Id && !r.IsDeleted)
+                .Where(r => r.PatientId == patientId && !r.IsDeleted)
+                .OrderByDescending(r => r.ReportDate)
                 .ToListAsync();
 
             return View(reports);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var report = await _context.Reports.FindAsync(id);
+            if (report == null) return NotFound();
+
+            report.IsDeleted = true;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("MyReports");
         }
     }
 }

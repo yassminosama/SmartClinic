@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartClinic.Models
 {
@@ -6,15 +7,21 @@ namespace SmartClinic.Models
     {
         [Key]
         public int ReportId { get; set; }
+
         public string? PatientId { get; set; }
-        public DateTime ReportDate { get; set; } 
+
+        public DateTime ReportDate { get; set; }
+
+        [Required]
         public string Description { get; set; }
-        public string Attachment { get; set; }
+
+        public string? Attachment { get; set; }
+
         public bool IsDeleted { get; set; } = false;
 
-        // Navigation properties
+        // Navigation
+        [ForeignKey("PatientId")]
         public Patient Patient { get; set; }
-
     }
-
 }
+
