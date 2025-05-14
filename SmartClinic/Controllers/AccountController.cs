@@ -137,6 +137,11 @@ namespace SmartClinic.Controllers
                     if (await _userManager.IsInRoleAsync(user, "Doctor"))
                         return RedirectToAction("DashDIndex", "DoctorDashboard");
 
+                    if (await _userManager.IsInRoleAsync(user, "Receptionist"))
+                        return RedirectToAction("DashRIndex", "ReceptionistDashboard");
+
+
+
                     return RedirectToAction("Index", "Home");
                 }
             }
