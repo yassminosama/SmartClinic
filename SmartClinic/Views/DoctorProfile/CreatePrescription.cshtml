@@ -1,0 +1,211 @@
+﻿@* @using SmartClinic.Models
+@model SmartClinic.ViewModels.CreatePrescriptionViewModel
+
+<h2>Create Prescription for @Model.PatientName</h2>
+
+<form asp-action="CreatePrescription" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="AppointmentId" />
+    <input type="hidden" asp-for="PatientId" />
+    <input type="hidden" asp-for="DoctorId" />
+
+    <div class="form-group">
+        <label asp-for="Diagnoses"></label>
+        <textarea asp-for="Diagnoses" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+
+    <hr />
+    <h4>Medications</h4>
+    <div id="medications-container">
+        @for (int i = 0; i < Model.Medications.Count; i++)
+        {
+            <div class="medication-item border p-3 mb-3">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input asp-for="Medications[@i].Name" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Dosage</label>
+                    <input asp-for="Medications[@i].Dosage" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Duration</label>
+                    <input asp-for="Medications[@i].Duration" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input asp-for="Medications[@i].StartDate" type="date" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input asp-for="Medications[@i].EndDate" type="date" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Instructions</label>
+                    <input asp-for="Medications[@i].Instructions" class="form-control" />
+                </div>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Prescription</button>
+</form>
+ *@
+
+
+
+
+
+
+
+
+
+
+
+
+@model SmartClinic.ViewModels.CreatePrescriptionViewModel
+
+<h2>Create Prescription for @Model.PatientName</h2>
+
+<form asp-action="CreatePrescription" method="post" id="prescription-form">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="AppointmentId" />
+    <input type="hidden" asp-for="PatientId" />
+    <input type="hidden" asp-for="DoctorId" />
+
+    <div class="form-group">
+        <label asp-for="Diagnoses"></label>
+        <textarea asp-for="Diagnoses" class="form-control"></textarea>
+        <span asp-validation-for="Diagnoses" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <hr />
+    <h4>Medications</h4>
+    <div id="medications-container">
+        @for (int i = 0; i < Model.Medications.Count; i++)
+        {
+            <div class="medication-item card mb-3">
+                <div class="card-header">
+                    <button type="button" class="btn btn-danger btn-sm float-right remove-medication">Remove</button>
+                    Medication #<span class="medication-number">@(i + 1)</span>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="Medications[i].Name"></label>
+                        <input asp-for="Medications[i].Name" class="form-control" />
+                        <span asp-validation-for="Medications[i].Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Medications[i].Dosage"></label>
+                            <input asp-for="Medications[i].Dosage" class="form-control" />
+                            <span asp-validation-for="Medications[i].Dosage" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Medications[i].Duration"></label>
+                            <input asp-for="Medications[i].Duration" class="form-control" />
+                            <span asp-validation-for="Medications[i].Duration" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Medications[i].StartDate"></label>
+                            <input asp-for="Medications[i].StartDate" type="date" class="form-control" />
+                            <span asp-validation-for="Medications[i].StartDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Medications[i].EndDate"></label>
+                            <input asp-for="Medications[i].EndDate" type="date" class="form-control" />
+                            <span asp-validation-for="Medications[i].EndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Medications[i].Instructions"></label>
+                        <textarea asp-for="Medications[i].Instructions" class="form-control"></textarea>
+                        <span asp-validation-for="Medications[i].Instructions" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button type="button" id="add-medication" class="btn btn-secondary mb-3">
+        <i class="fas fa-plus"></i> Add Medication
+    </button>
+
+    <button type="submit" class="btn btn-success">
+        <i class="fas fa-save"></i> Save Prescription
+    </button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Add new medication
+            $("#add-medication").click(function () {
+                var container = $("#medications-container");
+                var index = container.children().length;
+                var html = `
+                    <div class="medication-item card mb-3">
+                        <div class="card-header">
+                            <button type="button" class="btn btn-danger btn-sm float-right remove-medication">Remove</button>
+                            Medication #<span class="medication-number">${index + 1}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input name="Medications[${index}].Name" class="form-control" />
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>Dosage</label>
+                                    <input name="Medications[${index}].Dosage" class="form-control" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Duration</label>
+                                    <input name="Medications[${index}].Duration" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>Start Date</label>
+                                    <input name="Medications[${index}].StartDate" type="date" class="form-control" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>End Date</label>
+                                    <input name="Medications[${index}].EndDate" type="date" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Instructions</label>
+                                <textarea name="Medications[${index}].Instructions" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>`;
+                container.append(html);
+            });
+
+            // Remove medication
+            $(document).on("click", ".remove-medication", function () {
+                $(this).closest(".medication-item").remove();
+                // Update medication numbers
+                $(".medication-item").each(function (index) {
+                    $(this).find(".medication-number").text(index + 1);
+                });
+            });
+        });
+    </script>
+}

@@ -8,5 +8,7 @@ namespace SmartClinic.ViewModels
         public Patient Patient { get; set; }
         public List<Report> Reports { get; set; }
         public MedicalHistory MedicalHistory { get; set; }
+        public List<Prescription> Prescriptions { get; set; } 
+        public string CurrentDoctorId { get; set; }
     }
 }

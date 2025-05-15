@@ -2,28 +2,44 @@
 
 <h2>Your Appointments</h2>
 
-<table class="table table-bordered table-striped shadow-sm">
-    <thead class="table-dark">
+<table class="table">
+    <thead>
         <tr>
             <th>Patient</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Actions</th> <!-- عمود جديد -->
+            <th> Action </th>
+
         </tr>
     </thead>
     <tbody>
         @foreach (var appt in Model)
         {
-                <tr>
-                    <td>@appt.PatientName</td>
-                    <td>@appt.AppointmentDate.ToString("g")</td>
-                    <td>@appt.Status</td>
-                    <td>
-                        <a asp-controller="DoctorProfile" asp-action="PatientDetails" asp-route-patientId="@appt.PatientId" class="btn btn-primary btn-sm">
-                            View Patient
-                        </a>
-                    </td>
-                </tr>
+            <tr>
+                <td>@appt.PatientName</td>
+                <td>@appt.AppointmentDate.ToString("g")</td> <!-- Formats as date & time -->
+                <td>@appt.Status</td>
+                <td>
+                    <a asp-action="CreatePrescription"
+                       asp-controller="DoctorProfile"
+                       asp-route-appointmentId="@appt.AppointmentId"
+                       class="btn btn-sm btn-primary">
+                        Create Prescription
+                    </a>
+                    @* <a asp-controller="PatientProfile"
+                       asp-action="Index"
+                       asp-route-id="@appt.PatientName"
+                       class="btn btn-sm btn-info">
+                        👤 View Profile
+                    </a> *@
+                </td>
+                               <td>
+                    <a asp-controller="DoctorProfile" asp-action="PatientDetails" asp-route-patientId="@appt.PatientId" class="btn btn-primary btn-sm">
+                        View Patient
+                    </a>
+                </td>
+
+            </tr>
         }
     </tbody>
 </table>

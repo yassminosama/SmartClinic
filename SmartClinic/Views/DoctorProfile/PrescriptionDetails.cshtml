@@ -1,0 +1,149 @@
+﻿@* @using SmartClinic.Models
+@model SmartClinic.ViewModels.PrescriptionDetailsViewModel
+
+<h2>Prescription Details</h2>
+
+<div>
+    <h3>Doctor: @Model.DoctorName</h3>
+    <h3>Patient: @Model.PatientName</h3>
+    <p><strong>Prescription Date:</strong> @Model.PrescriptionDate.ToString("g")</p>
+    <p><strong>Diagnoses:</strong> @Model.Diagnoses</p>
+    <p><strong>Notes:</strong> @Model.Notes</p>
+
+    <h4>Medications:</h4>
+    @if (Model.Medications != null && Model.Medications.Any())
+    {
+        <ul>
+            @foreach (var medication in Model.Medications)
+            {
+                <li>
+                    <strong>@medication.Name</strong><br />
+                    Dosage: @medication.Dosage<br />
+                    Duration: @medication.Duration<br />
+                    Start Date: @medication.StartDate.ToString("g")<br />
+                    End Date: @medication.EndDate.ToString("g")<br />
+                    Instructions: @medication.Instructions
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No medications added.</p>
+    }
+
+    <a href="@Url.Action("DoctorAppointments", "DoctorProfile")" class="btn btn-primary">Back to Appointments</a>
+</div>
+ *@
+
+
+
+@* @using SmartClinic.Models
+@model SmartClinic.ViewModels.PrescriptionDetailsViewModel
+
+<h2>Prescription Details</h2>
+
+<div>
+    <h3>Doctor: @Model.DoctorName</h3>
+    <h3>Patient: @Model.PatientName</h3>
+    <p><strong>Prescription Date:</strong> @Model.PrescriptionDate.ToString("g")</p>
+    <p><strong>Diagnoses:</strong> @Model.Diagnoses</p>
+    <p><strong>Notes:</strong> @Model.Notes</p>
+
+    <!-- Add the medications list right here -->
+    <h4>Medications:</h4>
+    @if (Model.Medications.Any())
+    {
+        <ul class="list-unstyled">
+            @foreach (var medication in Model.Medications)
+            {
+                <li class="mb-3 p-3 border rounded">
+                    <strong>@medication.Name</strong><br />
+                    <span class="text-muted">Dosage:</span> @medication.Dosage<br />
+                    <span class="text-muted">Duration:</span> @medication.Duration<br />
+                    <span class="text-muted">Start Date:</span> @medication.StartDate.ToString("g")<br />
+                    <span class="text-muted">End Date:</span> @medication.EndDate.ToString("g")<br />
+                    <span class="text-muted">Instructions:</span> @medication.Instructions
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">No medications prescribed.</p>
+    }
+
+    <a href="@Url.Action("DoctorAppointments", "DoctorProfile")" class="btn btn-primary">Back to Appointments</a>
+</div> *@
+
+
+@model SmartClinic.ViewModels.PrescriptionDetailsViewModel
+
+<div class="card">
+    <div class="card-header">
+        <h2>Prescription Details</h2>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Patient Information</h5>
+                <p><strong>Name:</strong> @Model.PatientName</p>
+                <p><strong>Prescription Date:</strong> @Model.PrescriptionDate.ToString("g")</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Doctor Information</h5>
+                <p><strong>Name:</strong> @Model.DoctorName</p>
+                <p><strong>Appointment ID:</strong> @Model.AppointmentId</p>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h5>Diagnoses</h5>
+            <div class="border p-3">@Model.Diagnoses</div>
+        </div>
+
+        <div class="mb-4">
+            <h5>Notes</h5>
+            <div class="border p-3">@Model.Notes</div>
+        </div>
+
+        <h5>Prescribed Medications</h5>
+        @if (Model.Medications.Any())
+        {
+            <div class="list-group">
+                @foreach (var medication in Model.Medications)
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">@medication.Name</h6>
+                            <small>Duration: @medication.Duration</small>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <small class="text-muted">Dosage:</small>
+                                <p>@medication.Dosage</p>
+                            </div>
+                            <div class="col-md-4">
+                                <small class="text-muted">Period:</small>
+                                <p>@medication.StartDate.ToString("d") to @medication.EndDate.ToString("d")</p>
+                            </div>
+                            <div class="col-md-4">
+                                <small class="text-muted">Instructions:</small>
+                                <p>@medication.Instructions</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">No medications were prescribed.</div>
+        }
+    </div>
+    <div class="card-footer">
+        <a href="@Url.Action("DoctorAppointments", "DoctorProfile")" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Back to Appointments
+        </a>
+    </div>
+</div>
