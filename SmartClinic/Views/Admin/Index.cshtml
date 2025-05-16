@@ -1,0 +1,70 @@
+﻿@model SmartClinic.ViewModels.AdminDashboardVM
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1>👑 Welcome to Admin Dashboard</h1>
+
+<div class="row text-center">
+
+    <div class="col-md-3">
+        <div class="card bg-primary text-white p-3 rounded">
+            <h3>👨‍⚕️ Doctors</h3>
+            <h2>@Model.DoctorCount</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-success text-white p-3 rounded">
+            <h3>🧑‍🤝‍🧑 Patients</h3>
+            <h2>@Model.PatientCount</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark p-3 rounded">
+            <h3>👩‍💼 Receptionists</h3>
+            <h2>@Model.ReceptionistCount</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-dark text-white p-3 rounded">
+            <h3>🛡️ Admins</h3>
+            <h2>@Model.AdminCount</h2>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 text-center">
+    <a href="/Admin/addAdmin" class="btn btn-outline-dark">➕ Add New Admin</a>
+    <a href="/Admin/showDoctors" class="btn btn-outline-primary">👨‍⚕️ Show Doctors</a>
+    <a href="/Admin/showPatients" class="btn btn-outline-success">👩‍⚕️ Show Patients</a>
+</div>
+<canvas id="adminStatsChart" width="400" height="400"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('adminStatsChart').getContext('2d');
+    const adminStatsChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Doctors', 'Patients', 'Receptionists', 'Admins'],
+            datasets: [{
+                label: 'System Users',
+                data: [@Model.DoctorCount, @Model.PatientCount, @Model.ReceptionistCount, @Model.AdminCount],
+                backgroundColor: [
+                    '#007bff', // Doctors - Blue
+                    '#28a745', // Patients - Green
+                    '#ffc107', // Receptionists - Yellow
+                    '#343a40'  // Admins - Dark
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>

@@ -26,6 +26,29 @@ namespace SmartClinic.Controllers
         public ApplicationDbContext Db { get; }
         public UserManager<AppUser> userManager { get; }
 
+
+
+        public IActionResult Index()
+        {
+            var totalDoctors = Db.Doctors.Count();
+            var totalPatients = Db.Patients.Count();
+            var totalReceptionists = Db.Receptionists.Count();
+            var totalAdmins = Db.Users.Count(u => u.Role == "Admin");
+
+            var model = new AdminDashboardVM
+            {
+                DoctorCount = totalDoctors,
+                PatientCount = totalPatients,
+                ReceptionistCount = totalReceptionists,
+                AdminCount = totalAdmins
+            };
+
+            return View(model);
+        }
+
+
+
+
         [HttpGet]
         public IActionResult addAdmin()
         {

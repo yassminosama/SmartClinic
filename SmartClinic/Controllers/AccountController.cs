@@ -140,7 +140,8 @@ namespace SmartClinic.Controllers
                     if (await _userManager.IsInRoleAsync(user, "Receptionist"))
                         return RedirectToAction("DashRIndex", "ReceptionistDashboard");
 
-
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                        return RedirectToAction("Index", "Admin");
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -149,6 +150,7 @@ namespace SmartClinic.Controllers
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View(userModel);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> LogOut()

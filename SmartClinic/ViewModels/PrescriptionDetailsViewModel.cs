@@ -1,4 +1,6 @@
 ﻿using SmartClinic.Models;
+using System;
+using System.Collections.Generic;
 
 namespace SmartClinic.ViewModels
 {
@@ -7,12 +9,11 @@ namespace SmartClinic.ViewModels
         public int PrescriptionId { get; set; }
         public int AppointmentId { get; set; }
         public string DoctorName { get; set; }
+        public string DoctorSpecialization { get; set; } 
         public string PatientName { get; set; }
         public string Diagnoses { get; set; }
         public string Notes { get; set; }
         public DateTime PrescriptionDate { get; set; }
-        public IEnumerable<Medication> Medications { get; set; }  // Ensure this is a collection
+        public ICollection<Medication> Medications { get; set; }
     }
-
-
 }

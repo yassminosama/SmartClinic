@@ -1,0 +1,40 @@
+﻿@model List<SmartClinic.ViewModels.PrescriptionDetailsViewModel>
+
+@{
+    ViewData["Title"] = "Your Doctors";
+    var groupedByDoctor = Model.GroupBy(p => new { p.DoctorName, p.DoctorSpecialization });
+}
+
+<h2 class="mb-4">👨‍⚕️ Doctors Who Wrote Your Prescriptions</h2>
+
+<input type="text" class="form-control mb-3" id="doctorSearch" placeholder="Search by doctor or specialization..." />
+
+<div class="row" id="doctorList">
+    @foreach (var group in groupedByDoctor)
+    {
+            <div class="col-md-4 doctor-card" data-name="@group.Key.DoctorName.ToLower()" data-specialization="@group.Key.DoctorSpecialization.ToLower()">
+                <a asp-action="DoctorPrescriptions" asp-route-doctorName="@group.Key.DoctorName" class="text-decoration-none">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@group.Key.DoctorName</h5>
+                            <p class="card-text text-muted">@group.Key.DoctorSpecialization</p>
+                            <i class="fas fa-user-md fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+    }
+</div>
+
+@section Scripts {
+        <script>
+            document.getElementById("doctorSearch").addEventListener("keyup", function () {
+                var keyword = this.value.toLowerCase();
+                document.querySelectorAll(".doctor-card").forEach(function (card) {
+                    var name = card.getAttribute("data-name");
+                    var specialization = card.getAttribute("data-specialization");
+                    card.style.display = (name.includes(keyword) || specialization.includes(keyword)) ? "block" : "none";
+                });
+            });
+        </script>
+}

@@ -35,17 +35,13 @@ namespace SmartClinic.ViewModels
          
         public string Gender {  get; set; } 
 
-            public IFormFile imageFile { get; set; }
-
-
-
-
-
-
-
-
-        
+            public IFormFile imageFile { get; set; }        
     }
+
+
+
+
+
 
 }
 
