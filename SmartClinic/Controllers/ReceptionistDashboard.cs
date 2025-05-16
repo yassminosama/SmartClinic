@@ -25,35 +25,38 @@ namespace SmartClinic.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return RedirectToAction("Error", "Home"); // Redirect to an error page
+                return RedirectToAction("Error", "Home");
             }
 
-            // Fetch appointments from the database
+            var today = DateTime.Today;
             var appointments = await _context.Appointments
-                .Where(a => !a.IsDeleted)
+                .Where(a => !a.IsDeleted && a.AppointmentDate.Date == today)
                 .Include(a => a.Patient)
                 .Include(a => a.Doctor)
                 .Include(a => a.Bill)
+                .OrderBy(a => a.CreatedAt) // Order by creation time
                 .Select(a => new AppointmentViewModel
                 {
                     AppointmentId = a.AppointmentId,
+                    PatientId = a.PatientId,
                     PatientName = a.PatientId == null ? null : a.Patient.FullName,
                     GuestName = a.GuestName,
                     DoctorName = a.Doctor.FullName,
-                    TimeLeft = a.AppointmentDate > DateTime.Now
+                    TimeLeft = (a.AppointmentDate - DateTime.Now).TotalSeconds > 0
                         ? (a.AppointmentDate - DateTime.Now).ToString(@"hh\:mm\:ss")
-                        : "Entered",
+                        : "00:00:00",
                     Status = a.Status,
-                    BillStatus = a.Bill != null && a.Bill.IsPayed ? "Paid" : "Not Paid"
+                    BillStatus = a.GuestName != null ? "Paid" : (a.Bill != null && a.Bill.IsPayed ? "Paid" : "Not Paid"),
+                    BillId = a.Bill != null ? a.Bill.BillId : (int?)null,
+                    AppointmentDate = a.AppointmentDate,
+                    CreatedAt = a.CreatedAt // Added to show creation time
                 })
                 .ToListAsync();
 
             var doctors = await _context.Doctors
-                .Where(d => !d.IsDeleted) // EDIT: Filter out deleted doctors
+                .Where(d => !d.IsDeleted)
                 .ToListAsync();
 
-
-            // Create the ViewModel
             var viewModel = new ReceptionistDashboardVM
             {
                 User = user,
@@ -63,6 +66,7 @@ namespace SmartClinic.Controllers
 
             return View(viewModel);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateGuestAppointment(string guestName, string guestPhone, string doctorId, DateTime appointmentDate)
@@ -87,11 +91,11 @@ namespace SmartClinic.Controllers
 
             return RedirectToAction("DashRIndex");
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsEntered(int appointmentId)
         {
-            // Find the appointment by ID
             var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.AppointmentId == appointmentId);
 
             if (appointment == null)
@@ -99,13 +103,14 @@ namespace SmartClinic.Controllers
                 return NotFound("Appointment not found.");
             }
 
-            // Update the status to "Entered"
             appointment.Status = "Entered";
             await _context.SaveChangesAsync();
 
             return RedirectToAction("DashRIndex");
         }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkBillAsPaid(int billId)
         {
             var bill = await _context.Bills.FirstOrDefaultAsync(b => b.BillId == billId);

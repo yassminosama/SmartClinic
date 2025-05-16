@@ -1,64 +1,95 @@
-﻿@model SmartClinic.ViewModels.ReceptionistDashboardVM  
+﻿@model SmartClinic.ViewModels.ReceptionistDashboardVM
 
-<h1>Welcome, @Model.User.FullName</h1>  
-<p>Role: Receptionist</p>  
+@{
+    ViewData["Title"] = "Receptionist Dashboard";
+}
 
-<h2>Appointments</h2>  
-<table class="table">  
-    <thead>  
-        <tr>  
-            <th>Patient Name</th>  
-            <th>Doctor Name</th>  
-            <th>Time Left</th>  
-            <th>Status</th>  
-            <th>Bill Status</th>  
-        </tr>  
-    </thead>  
-    <tbody>  
-        @foreach (var appointment in Model.Appointments)  
+<style>
+    .time-left-cell {
+        font-family: monospace;
+        font-weight: bold;
+    }
+
+    .time-expired {
+        color: #dc3545;
+    }
+
+    .time-remaining {
+        color: #28a745;
+    }
+
+    .guest-row {
+        background-color: #f8f9fa;
+    }
+
+    .appointment-order {
+        font-weight: bold;
+        color: #6c757d;
+    }
+</style>
+
+<h1>Welcome, @Model.User.FullName</h1>
+<p>Role: Receptionist</p>
+
+<h2>Today's Appointments (Ordered by Registration Time)</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Patient Name</th>
+            <th>Doctor Name</th>
+            <th>Time Left</th>
+            <th>Status</th>
+            <th>Bill Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int counter = 1;
+        }
+        @foreach (var appointment in Model.Appointments)
         {
-            <tr>  
-                @if (appointment.PatientName == null)
-                {
-                    <td>@appointment.GuestName</td>
-                }
-                else
-                {
-                    <td>@appointment.PatientName</td>
-                }
-                 
-                <td>@appointment.DoctorName</td>  
-                <td>@appointment.TimeLeft</td>  
-                <td>@appointment.Status</td>  
-                <td>@appointment.BillStatus
-                    @if (appointment.BillStatus == "Not Paid")
+            <tr class="@(appointment.GuestName != null ? "guest-row" : "")">
+                <td class="appointment-order">@(counter++)</td>
+                <td>@(appointment.PatientName ?? appointment.GuestName)</td>
+                <td>@appointment.DoctorName</td>
+                <td class="time-left-cell
+                        @(appointment.Status == "Entered" || appointment.AppointmentDate <= DateTime.Now ? "time-expired" : "time-remaining")"
+                    data-appointment-date="@appointment.AppointmentDate.ToString("o")"
+                    data-appointment-status="@appointment.Status">
+                    @if (appointment.Status == "Entered")
                     {
-                        <form asp-action="MarkBillAsPaid" method="post" style="display:inline;">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="billId" value="@appointment.BillId" />
-                            <button type="submit" class="btn btn-success btn-sm">Mark as Paid</button>
-                        </form>
+                        @:Entered
                     }
-                
+                    else
+                    {
+                        @appointment.TimeLeft
+                    }
                 </td>
+                <td>@appointment.Status</td>
+                <td>@appointment.BillStatus</td>
                 <td>
-                    @if (appointment.TimeLeft == "Entered" && appointment.Status != "Entered")
+                    @if (appointment.Status == "Scheduled")
                     {
                         <form asp-action="MarkAsEntered" method="post" style="display:inline;">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="appointmentId" value="@appointment.AppointmentId" />
-                            <button type="submit" class="btn btn-warning">Mark as Entered</button>
+                            <button type="submit" class="btn @(appointment.GuestName != null ? "btn-info" : "btn-warning") btn-sm">
+                                @(appointment.GuestName != null ? "Guest Check-In" : "Mark as Entered")
+                            </button>
                         </form>
                     }
                 </td>
-            </tr>  
-        }  
-    </tbody>  
+            </tr>
+        }
+    </tbody>
 </table>
+
+<!-- Rest of your view remains the same -->
 <h3>Create Guest Appointment</h3>
 <form asp-action="CreateGuestAppointment" method="post">
-    @Html.AntiForgeryToken() <!-- EDIT: CSRF protection -->
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.AntiForgeryToken()
     <div class="form-group">
         <label for="guestName">Guest Name</label>
         <input type="text" id="guestName" name="guestName" class="form-control" required />
@@ -66,12 +97,11 @@
     <div class="form-group">
         <label for="guestPhone">Guest Phone</label>
         <input type="text" id="guestPhone" name="guestPhone" class="form-control" required />
-        @Html.ValidationMessage("guestName", "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         <label for="doctorId">Doctor</label>
         <select id="doctorId" name="doctorId" class="form-control" required>
-            @foreach (var doctor in Model.Doctors) 
+            @foreach (var doctor in Model.Doctors)
             {
                 <option value="@doctor.Id">@doctor.FullName</option>
             }
@@ -79,8 +109,54 @@
     </div>
     <div class="form-group">
         <label for="appointmentDate">Appointment Date</label>
-        <input type="datetime-local" id="appointmentDate" name="appointmentDate" class="form-control" required />
-            value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" class="form-control" required />
+        <input type="datetime-local" id="appointmentDate" name="appointmentDate"
+               class="form-control" required
+               value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
     </div>
-    <button type="submit" class="btn btn-primary">Create Appointment</button>
+    <button type="submit" class="btn btn-primary">Create Guest Appointment</button>
 </form>
+
+@section Scripts {
+    <script>
+        function updateTimeLeft() {
+            const now = new Date();
+            document.querySelectorAll('[data-appointment-date]').forEach(cell => {
+                const appointmentDate = new Date(cell.getAttribute('data-appointment-date'));
+                const status = cell.getAttribute('data-appointment-status');
+
+                if (status === "Entered") {
+                    cell.textContent = "Entered";
+                    cell.classList.remove('time-remaining');
+                    cell.classList.add('time-expired');
+                    return;
+                }
+
+                const diffMs = appointmentDate - now;
+
+                if (diffMs > 0) {
+                    const diffSec = Math.floor(diffMs / 1000);
+                    const hours = Math.floor(diffSec / 3600);
+                    const minutes = Math.floor((diffSec % 3600) / 60);
+                    const seconds = diffSec % 60;
+
+                    cell.textContent =
+                        `${hours.toString().padStart(2, '0')}:` +
+                        `${minutes.toString().padStart(2, '0')}:` +
+                        `${seconds.toString().padStart(2, '0')}`;
+
+                    cell.classList.remove('time-expired');
+                    cell.classList.add('time-remaining');
+                } else {
+                    cell.textContent = "Entered";
+                    cell.classList.remove('time-remaining');
+                    cell.classList.add('time-expired');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTimeLeft();
+            setInterval(updateTimeLeft, 1000);
+        });
+    </script>
+}
