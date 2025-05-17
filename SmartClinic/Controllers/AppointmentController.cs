@@ -63,7 +63,20 @@ public class AppointmentController : Controller
         // Check if the doctor is not available due to default off days
         bool isWeeklyOff = doctor.DefaultDate.Contains(appointmentDay);
 
-        if (isExceptionDate || isWeeklyOff)
+
+        // Check for conflicting appointments
+        var appointmentDateTime = model.AppointmentDate;
+
+        // التحقق من التوقيت المتقارب
+        var hasConflict = await _context.Appointments
+            .AnyAsync(a =>
+                a.DoctorId == model.DoctorId &&
+                Math.Abs(EF.Functions.DateDiffMinute(a.AppointmentDate, appointmentDateTime)) < 15);
+
+
+
+
+        if (isExceptionDate || isWeeklyOff || hasConflict)
         {
             ModelState.AddModelError("", "The doctor is not available on the selected date.");
             model.Specializations = GetDoctorSpecializations();
@@ -107,7 +120,7 @@ public class AppointmentController : Controller
         //return RedirectToAction("Book");
 
         TempData["Success"] = "Appointment booked successfully.";
-        return RedirectToAction("MyAppointments"); 
+        return RedirectToAction("MyAppointments");
 
     }
 
@@ -265,3 +278,271 @@ public class AppointmentController : Controller
 
 
 }
+
+
+//using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.EntityFrameworkCore;
+//using SmartClinic.Data;
+//using SmartClinic.Models;
+//using SmartClinic.ViewModels;
+
+//public class AppointmentController : Controller
+//{
+//    private readonly ApplicationDbContext _context;
+//    private readonly UserManager<AppUser> userManager;
+
+//    public AppointmentController(ApplicationDbContext context, UserManager<AppUser> userManager)
+//    {
+//        _context = context;
+//        this.userManager = userManager;
+//    }
+
+//    [HttpGet]
+//    public IActionResult Book()
+//    {
+//        var model = new AppointmentBookingVM
+//        {
+//            Specializations = GetDoctorSpecializations()
+//        };
+
+//        return View(model);
+//    }
+
+//    [HttpPost]
+//    public async Task<IActionResult> Book(AppointmentBookingVM model)
+//    {
+//        if (!ModelState.IsValid)
+//        {
+//            model.Specializations = GetDoctorSpecializations();
+//            return View(model);
+//        }
+
+//        var doctorRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Doctor")?.Id;
+
+//        var doctorIds = _context.UserRoles
+//            .Where(ur => ur.RoleId == doctorRoleId)
+//            .Select(ur => ur.UserId)
+//            .ToList();
+
+//        var doctor = await _context.Users
+//            .OfType<Doctor>()
+//            .Include(d => d.Appointments)
+//            .FirstOrDefaultAsync(d => doctorIds.Contains(d.Id) && d.Id == model.DoctorId && !d.IsDeleted);
+
+//        if (doctor == null)
+//        {
+//            ModelState.AddModelError("", "Doctor not found.");
+//            model.Specializations = GetDoctorSpecializations();
+//            return View(model);
+//        }
+
+//        var appointmentDateTime = model.AppointmentDate.Date + model.AppointmentTime;
+
+//        // تحقق من أيام العطلة والاستثناءات
+//        var appointmentDay = model.AppointmentDate.DayOfWeek.ToString();
+//        bool isExceptionDate = doctor.ExceptionDates.Any(ed => ed.HasValue && ed.Value.Date == model.AppointmentDate.Date);
+//        bool isWeeklyOff = doctor.DefaultDate.Contains(appointmentDay);
+
+//        if (isExceptionDate || isWeeklyOff)
+//        {
+//            ModelState.AddModelError("", "The doctor is not available on the selected date.");
+//            model.Specializations = GetDoctorSpecializations();
+//            return View(model);
+//        }
+
+//        var patient = await userManager.GetUserAsync(User) as Patient;
+//        if (patient == null)
+//        {
+//            ModelState.AddModelError("", "Patient not found.");
+//            model.Specializations = GetDoctorSpecializations();
+//            return View(model);
+//        }
+
+//        // تحقق من تداخل المواعيد
+//        var conflictingAppointment = doctor.Appointments
+//            .Where(a => a.AppointmentDate.Date == model.AppointmentDate.Date)
+//            .Any(a => Math.Abs((a.AppointmentDate - appointmentDateTime).TotalMinutes) < 15);
+
+//        if (conflictingAppointment)
+//        {
+//            ModelState.AddModelError("", "The selected time is already booked. Please choose another time at least 15 minutes apart.");
+//            model.Specializations = GetDoctorSpecializations();
+//            return View(model);
+//        }
+
+//        var appointment = new Appointment
+//        {
+//            DoctorId = doctor.Id,
+//            PatientId = patient.Id,
+//            AppointmentDate = appointmentDateTime,
+//            CreatedAt = DateTime.Now
+//        };
+
+//        _context.Appointments.Add(appointment);
+//        await _context.SaveChangesAsync();
+
+//        var bill = new Bill
+//        {
+//            AppointmentId = appointment.AppointmentId,
+//            PatientId = patient.Id,
+//            Amount = 200,
+//            BillDate = DateTime.Now,
+//            PaymentDate = DateTime.Now,
+//            IsPayed = false,
+//            IsRefunded = false
+//        };
+
+//        _context.Bills.Add(bill);
+//        await _context.SaveChangesAsync();
+
+//        TempData["Success"] = "Appointment booked successfully.";
+//        return RedirectToAction("MyAppointments");
+//    }
+
+//    [HttpGet]
+//    public JsonResult GetDoctorsBySpecialization(string specialization)
+//    {
+//        var doctorRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Doctor")?.Id;
+
+//        if (doctorRoleId == null)
+//            return Json(new { success = false, message = "Doctor role not found" });
+
+//        var doctorIds = _context.UserRoles
+//            .Where(ur => ur.RoleId == doctorRoleId)
+//            .Select(ur => ur.UserId)
+//            .ToList();
+
+//        var doctors = _context.Doctors
+//            .Where(u => doctorIds.Contains(u.Id)
+//                        && u.Specialization == specialization
+//                        && !u.IsDeleted)
+//            .Select(u => new { u.Id, u.FullName })
+//            .ToList();
+
+//        return Json(doctors);
+//    }
+
+//    [HttpGet]
+//    public JsonResult GetDoctorAvailability(string doctorId)
+//    {
+//        var doctor = _context.Doctors.FirstOrDefault(d => d.Id == doctorId);
+
+//        if (doctor == null)
+//            return Json(new { success = false, message = "Doctor not found" });
+
+//        var daysOff = doctor.DefaultDate ?? new List<string>();
+//        var exceptions = doctor.ExceptionDates
+//            .Where(e => e.HasValue)
+//            .Select(e => e.Value.ToString("yyyy-MM-dd"))
+//            .ToList();
+
+//        return Json(new { daysOff, exceptions });
+//    }
+
+//    private List<string> GetDoctorSpecializations()
+//    {
+//        var doctorRoleId = _context.Roles.FirstOrDefault(r => r.Name == "Doctor")?.Id;
+
+//        var doctorIds = _context.UserRoles
+//            .Where(ur => ur.RoleId == doctorRoleId)
+//            .Select(ur => ur.UserId)
+//            .ToList();
+
+//        var specializations = _context.Doctors
+//            .Where(u => doctorIds.Contains(u.Id))
+//            .Select(u => u.Specialization)
+//            .Where(s => !string.IsNullOrEmpty(s))
+//            .Distinct()
+//            .ToList();
+
+//        return specializations;
+//    }
+
+//    [HttpGet]
+//    public async Task<IActionResult> MyAppointments()
+//    {
+//        var patient = await userManager.GetUserAsync(User) as Patient;
+//        if (patient == null)
+//        {
+//            return RedirectToAction("Login", "Account");
+//        }
+
+//        var appointments = await _context.Appointments
+//            .Where(a => a.PatientId == patient.Id)
+//            .Include(a => a.Doctor)
+//            .Include(a => a.Bill)
+//            .Select(a => new PatientAppointmentVM
+//            {
+//                AppointmentId = a.AppointmentId,
+//                AppointmentDate = a.AppointmentDate,
+//                DoctorName = a.Doctor.FullName,
+//                Specialization = a.Doctor.Specialization,
+//                IsPayed = a.Bill != null && a.Bill.IsPayed,
+//                Amount = a.Bill != null ? a.Bill.Amount : 0
+//            })
+//            .ToListAsync();
+
+//        return View(appointments);
+//    }
+
+//    [HttpPost]
+//    public async Task<IActionResult> StartPayment(int appointmentId)
+//    {
+//        var patient = await userManager.GetUserAsync(User) as Patient;
+//        if (patient == null)
+//            return RedirectToAction("Login", "Account");
+
+//        var bill = await _context.Bills
+//            .Include(b => b.Appointment)
+//            .FirstOrDefaultAsync(b => b.AppointmentId == appointmentId && b.PatientId == patient.Id);
+
+//        if (bill == null || bill.IsPayed)
+//        {
+//            TempData["Error"] = "Invalid or already paid bill.";
+//            return RedirectToAction("MyAppointments");
+//        }
+
+//        string paypalUrl = $"https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_xclick&business=sb-hinog35178331@personal.example.com" +
+//                           $"&item_name=Clinic+Appointment&amount={bill.Amount}" +
+//                           $"&currency_code=USD&return={Url.Action("PaymentSuccess", "Appointment", new { id = bill.BillId }, Request.Scheme)}" +
+//                           $"&cancel_return={Url.Action("MyAppointments", "Appointment", null, Request.Scheme)}";
+
+//        return Redirect(paypalUrl);
+//    }
+
+//    [HttpGet]
+//    public async Task<IActionResult> PaymentSuccess(int id)
+//    {
+//        var bill = await _context.Bills.FindAsync(id);
+//        if (bill == null || bill.IsPayed)
+//        {
+//            TempData["Error"] = "Bill not found or already paid.";
+//            return RedirectToAction("MyAppointments");
+//        }
+
+//        bill.IsPayed = true;
+//        bill.PaymentDate = DateTime.Now;
+//        await _context.SaveChangesAsync();
+
+//        TempData["Success"] = "Payment completed successfully.";
+//        return RedirectToAction("MyAppointments");
+//    }
+
+//    [HttpPost]
+//    public async Task<IActionResult> MarkAsPaid(int appointmentId)
+//    {
+//        var bill = await _context.Bills
+//            .FirstOrDefaultAsync(b => b.AppointmentId == appointmentId);
+
+//        if (bill == null)
+//            return NotFound();
+
+//        bill.IsPayed = true;
+//        bill.PaymentDate = DateTime.Now;
+
+//        await _context.SaveChangesAsync();
+
+//        return Ok();
+//    }
+//}
