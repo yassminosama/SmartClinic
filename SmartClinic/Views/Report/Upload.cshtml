@@ -5,25 +5,29 @@
     ViewData["Title"] = "Upload Report";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4 text-primary">Upload Medical Report</h2>
-    <form asp-action="Upload" method="post" enctype="multipart/form-data" class="shadow p-4 rounded bg-light">
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <input asp-for="Description" class="form-control" />
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="mb-4" style="color: #007a87; font-weight: 700; letter-spacing: 1.1px; text-align: center;">
+        Upload Medical Report
+    </h2>
+    <form asp-action="Upload" method="post" enctype="multipart/form-data" class="shadow p-4 rounded" style="background: #e0f2f3; border: 2px solid #007a87;">
+        <div class="mb-4">
+            <label asp-for="Description" class="form-label" style="font-weight: 600; color: #004451;"></label>
+            <input asp-for="Description" class="form-control" style="border: 2px solid #007a87; transition: border-color 0.3s;" />
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="File" class="form-label"></label>
-            <input asp-for="File" type="file" class="form-control" />
+        <div class="mb-4">
+            <label asp-for="File" class="form-label" style="font-weight: 600; color: #004451;"></label>
+            <input asp-for="File" type="file" class="form-control" style="border: 2px solid #007a87; transition: border-color 0.3s;" />
             <span asp-validation-for="File" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-success">Upload</button>
+        <button type="submit" class="btn btn-success w-100" style="background-color: #005f6b; border-color: #004451; font-weight: 700; letter-spacing: 0.8px; box-shadow: 0 4px 8px rgba(0,122,135,0.4);">
+            Upload
+        </button>
     </form>
 </div>
 
 @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -4,35 +4,106 @@
     ViewData["Title"] = "Log In";
 }
 
+<style>
+    :root {
+        --petrolic: #006d77;
+        --petrolic-dark: #004f54;
+        --accent: #83c5be;
+        --light-bg: #f9f9f9;
+        --white: #ffffff;
+        --text-dark: #343a40;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+        color: var(--petrolic-dark);
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    hr {
+        border-top: 2px solid var(--accent);
+        width: 60px;
+        margin-left: 0;
+    }
+
+    .form-container {
+        background-color: var(--white);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+    }
+
+    label {
+        font-weight: 600;
+        color: var(--petrolic-dark);
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: var(--petrolic);
+            box-shadow: 0 0 0 0.2rem rgba(0, 109, 119, 0.25);
+        }
+
+    .btn-primary {
+        background-color: var(--petrolic);
+        border-color: var(--petrolic-dark);
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--petrolic-dark);
+        }
+
+    .text-danger {
+        font-size: 0.9em;
+    }
+</style>
+
 <h1>Log In</h1>
 <hr />
 
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="LogIn" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-6 col-lg-4">
+        <div class="form-container">
+            <form asp-action="LogIn" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+                <div class="form-group mt-3">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
 
-            <div class="form-group form-check">
-                <input class="form-check-input" asp-for="RememberMe" />
-                <label class="form-check-label" asp-for="RememberMe">Remember Me</label>
-            </div>
+                <div class="form-group form-check mt-3">
+                    <input class="form-check-input" asp-for="RememberMe" />
+                    <label class="form-check-label" asp-for="RememberMe">Remember Me</label>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Log In" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="form-group mt-4">
+                    <input type="submit" value="Log In" class="btn btn-primary w-100" />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

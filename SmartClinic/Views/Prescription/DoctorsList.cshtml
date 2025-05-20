@@ -5,36 +5,64 @@
     var groupedByDoctor = Model.GroupBy(p => new { p.DoctorName, p.DoctorSpecialization });
 }
 
-<h2 class="mb-4">👨‍⚕️ Doctors Who Wrote Your Prescriptions</h2>
+<h2 class="mb-4" style="color: #007a87; font-weight: 700; letter-spacing: 1px;">
+    👨‍⚕️ Doctors Who Wrote Your Prescriptions
+</h2>
 
-<input type="text" class="form-control mb-3" id="doctorSearch" placeholder="Search by doctor or specialization..." />
+<input type="text" class="form-control mb-4 shadow-sm" id="doctorSearch" placeholder="Search by doctor or specialization..."
+       style="border: 2px solid #007a87; border-radius: 12px; padding: 10px 15px; font-weight: 500;"/>
 
 <div class="row" id="doctorList">
     @foreach (var group in groupedByDoctor)
     {
-            <div class="col-md-4 doctor-card" data-name="@group.Key.DoctorName.ToLower()" data-specialization="@group.Key.DoctorSpecialization.ToLower()">
-                <a asp-action="DoctorPrescriptions" asp-route-doctorName="@group.Key.DoctorName" class="text-decoration-none">
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">@group.Key.DoctorName</h5>
-                            <p class="card-text text-muted">@group.Key.DoctorSpecialization</p>
-                            <i class="fas fa-user-md fa-2x text-primary"></i>
-                        </div>
+        <div class="col-md-4 doctor-card mb-4" data-name="@group.Key.DoctorName.ToLower()" data-specialization="@group.Key.DoctorSpecialization.ToLower()"
+             style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
+            <a asp-action="DoctorPrescriptions" asp-route-doctorName="@group.Key.DoctorName" class="text-decoration-none">
+                <div class="card shadow-sm h-100 border-0" 
+                     style="border-radius: 16px; background: #e7f2f3; cursor: pointer;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color: #004451; font-weight: 700;">@group.Key.DoctorName</h5>
+                        <p class="card-text text-muted" style="font-style: italic; font-weight: 500;">@group.Key.DoctorSpecialization</p>
+                        <i class="fas fa-user-md fa-3x" style="color: #007a87;"></i>
                     </div>
-                </a>
-            </div>
+                </div>
+            </a>
+        </div>
     }
 </div>
 
 @section Scripts {
-        <script>
-            document.getElementById("doctorSearch").addEventListener("keyup", function () {
-                var keyword = this.value.toLowerCase();
-                document.querySelectorAll(".doctor-card").forEach(function (card) {
-                    var name = card.getAttribute("data-name");
-                    var specialization = card.getAttribute("data-specialization");
-                    card.style.display = (name.includes(keyword) || specialization.includes(keyword)) ? "block" : "none";
-                });
+    <script>
+        document.getElementById("doctorSearch").addEventListener("keyup", function () {
+            var keyword = this.value.toLowerCase();
+            document.querySelectorAll(".doctor-card").forEach(function (card) {
+                var name = card.getAttribute("data-name");
+                var specialization = card.getAttribute("data-specialization");
+                card.style.display = (name.includes(keyword) || specialization.includes(keyword)) ? "block" : "none";
             });
-        </script>
+        });
+    </script>
 }
+
+<style>
+    .doctor-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 20px rgba(0, 122, 135, 0.3);
+    }
+
+    /* Scrollbar styling for better UX on longer lists */
+    #doctorList {
+        max-height: 600px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    #doctorList::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #doctorList::-webkit-scrollbar-thumb {
+        background-color: #007a87;
+        border-radius: 10px;
+    }
+</style>

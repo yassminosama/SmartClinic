@@ -5,6 +5,51 @@
 }
 
 <style>
+    :root {
+        --petrolic: #006d77;
+        --petrolic-dark: #004f54;
+        --light-bg: #f1f1f1;
+        --accent: #83c5be;
+        --text-color: #333;
+        --white: #ffffff;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1, h2, h3 {
+        color: var(--petrolic-dark);
+    }
+
+    .table {
+        background-color: var(--white);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th {
+        background-color: var(--petrolic);
+        color: var(--white);
+    }
+
+    .table td,
+    .table th {
+        vertical-align: middle;
+    }
+
+    .appointment-order {
+        font-weight: bold;
+        color: var(--accent);
+    }
+
+    .guest-row {
+        background-color: #e0f7fa;
+    }
+
     .time-left-cell {
         font-family: monospace;
         font-weight: bold;
@@ -18,21 +63,57 @@
         color: #28a745;
     }
 
-    .guest-row {
-        background-color: #f8f9fa;
+    .btn-primary, .btn-info, .btn-warning {
+        border-radius: 20px;
+        font-weight: 500;
+        padding: 5px 15px;
     }
 
-    .appointment-order {
-        font-weight: bold;
-        color: #6c757d;
+    .btn-primary {
+        background-color: var(--petrolic);
+        border-color: var(--petrolic-dark);
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #e0a800;
+        color: #000;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #138496;
+        color: #fff;
+    }
+
+    form {
+        background-color: var(--white);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        margin-top: 30px;
+    }
+
+    label {
+        font-weight: 600;
+        color: var(--petrolic-dark);
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    button[type="submit"] {
+        margin-top: 10px;
     }
 </style>
 
-<h1>Welcome, @Model.User.FullName</h1>
-<p>Role: Receptionist</p>
+<h1>Welcome, <span style="color: var(--petrolic);">@Model.User.FullName</span></h1>
+<p><strong>Role:</strong> Receptionist</p>
 
 <h2>Today's Appointments (Ordered by Registration Time)</h2>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>#</th>
@@ -55,7 +136,7 @@
                 <td>@(appointment.PatientName ?? appointment.GuestName)</td>
                 <td>@appointment.DoctorName</td>
                 <td class="time-left-cell
-                        @(appointment.Status == "Entered" || appointment.AppointmentDate <= DateTime.Now ? "time-expired" : "time-remaining")"
+                            @(appointment.Status == "Entered" || appointment.AppointmentDate <= DateTime.Now ? "time-expired" : "time-remaining")"
                     data-appointment-date="@appointment.AppointmentDate.ToString("o")"
                     data-appointment-status="@appointment.Status">
                     @if (appointment.Status == "Entered")
@@ -86,7 +167,6 @@
     </tbody>
 </table>
 
-<!-- Rest of your view remains the same -->
 <h3>Create Guest Appointment</h3>
 <form asp-action="CreateGuestAppointment" method="post">
     @Html.AntiForgeryToken()
@@ -154,7 +234,7 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             updateTimeLeft();
             setInterval(updateTimeLeft, 1000);
         });

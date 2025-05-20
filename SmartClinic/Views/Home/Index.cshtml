@@ -2,7 +2,82 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: white;
+        background: url('https://images.unsplash.com/photo-1588776814546-ec7ab9f1d9e0?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+        background-size: cover;
+    }
+
+    .overlay {
+        background-color: rgba(0, 46, 55, 0.8); /* Petrolic dark overlay */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+
+    .landing-container {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .landing-title {
+        font-size: 4rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #00b4ab; /* Lighter petrolic */
+    }
+
+    .landing-subtitle {
+        font-size: 1.5rem;
+        max-width: 600px;
+        margin-bottom: 30px;
+        color: #dfefff;
+    }
+
+    .cta-button {
+        background-color: #00b4ab;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        color: white;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .cta-button:hover {
+            background-color: #00797a;
+            transform: scale(1.05);
+        }
+
+    @@media (max-width: 768px) {
+        .landing-title {
+            font-size: 2.5rem;
+        }
+
+        .landing-subtitle {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="overlay"></div>
+
+<div class="landing-container">
+    <h1 class="landing-title">Welcome to MediSphere</h1>
+    <p class="landing-subtitle">Your smart gateway to modern clinic management – simplifying patient appointments, doctor schedules, and more through intelligent systems.</p>
+    <a href="/Account/Login"><button class="cta-button">Get Started</button></a>
 </div>

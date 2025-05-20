@@ -2,80 +2,121 @@
 @{
     ViewData["Title"] = "My Appointments";
 }
-<h2>My Appointments</h2>
+<h2 class="mb-4" style="color: #005f6b; font-weight: 700; letter-spacing: 1px;">My Appointments</h2>
 
 <script src="https://www.paypal.com/sdk/js?client-id=AfJ1us5jWF7bSWpoEoVFc85_T2n0uWmYehWQhB6cSFbJucllqS4zQa0ZpUnRS1B7OZLB0YQNuxMSq7Tt&currency=USD"></script>
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">You have no appointments.</div>
+    <div class="alert alert-info" style="background-color: #d0e9f0; color: #004451; border-color: #004451;">
+        You have no appointments.
+    </div>
 }
 else
 {
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Doctor</th>
-                <th>Specialization</th>
-                <th>Amount</th>
-                <th>Payment Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var a in Model)
-        {
-            <tr>
-                <td>@a.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@a.DoctorName</td>
-                <td>@a.Specialization</td>
-                <td>@a.Amount.ToString("C")</td>
-                <td id="status-@a.AppointmentId">
-                    @if (a.IsPayed)
-                    {
-                        <span class="badge bg-success">Paid</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger">Not Paid</span>
-                    }
-                </td>
-                <td>
-                    @if (!a.IsPayed)
-                    {
-                        <div id="paypal-button-container-@a.AppointmentId"></div>
-                        <script>
-                            paypal.Buttons({
-                                createOrder: function (data, actions) {
-                                    return actions.order.create({
-                                        purchase_units: [{
-                                            amount: {
-                                                value: '@a.Amount'
-                                            }
-                                        }]
-                                    });
-                                },
-                                onApprove: function (data, actions) {
-                                    return actions.order.capture().then(function (details) {
-                                        fetch('/Appointment/MarkAsPaid?appointmentId=@a.AppointmentId', {
-                                            method: 'POST'
-                                        }).then(res => {
-                                            if (res.ok) {
-                                                document.querySelector("#status-@a.AppointmentId").innerHTML =
-                                                    '<span class="badge bg-success">Paid</span>';
-                                                document.querySelector("#paypal-button-container-@a.AppointmentId").innerHTML = '';
-                                            }
-                                        });
-                                    });
-                                }
-                            }).render('#paypal-button-container-@a.AppointmentId');
-                        </script>
-                    }
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <div class="table-responsive shadow-sm rounded" style="background: #e6f2f3;">
+        <table class="table table-bordered table-hover align-middle" style="color: #004451;">
+            <thead style="background-color: #005f6b; color: white;">
+                <tr>
+                    <th>Date</th>
+                    <th>Doctor</th>
+                    <th>Specialization</th>
+                    <th>Amount</th>
+                    <th>Payment Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr style="background-color: #f0f8fa;">
+                        <td>@a.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@a.DoctorName</td>
+                        <td>@a.Specialization</td>
+                        <td>@a.Amount.ToString("C")</td>
+                        <td id="status-@a.AppointmentId">
+                            @if (a.IsPayed)
+                            {
+                                <span class="badge bg-success" style="font-weight: 600; font-size: 0.9rem;">Paid</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger" style="font-weight: 600; font-size: 0.9rem;">Not Paid</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!a.IsPayed)
+                            {
+                                <div id="paypal-button-container-@a.AppointmentId" style="max-width: 180px;"></div>
+                                <script>
+                                    paypal.Buttons({
+                                        createOrder: function (data, actions) {
+                                            return actions.order.create({
+                                                purchase_units: [{
+                                                    amount: {
+                                                        value: '@a.Amount'
+                                                    }
+                                                }]
+                                            });
+                                        },
+                                        onApprove: function (data, actions) {
+                                            return actions.order.capture().then(function (details) {
+                                                fetch('/Appointment/MarkAsPaid?appointmentId=@a.AppointmentId', {
+                                                    method: 'POST'
+                                                }).then(res => {
+                                                    if (res.ok) {
+                                                        document.querySelector("#status-@a.AppointmentId").innerHTML =
+                                                            '<span class="badge bg-success" style="font-weight: 600; font-size: 0.9rem;">Paid</span>';
+                                                        document.querySelector("#paypal-button-container-@a.AppointmentId").innerHTML = '';
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    }).render('#paypal-button-container-@a.AppointmentId');
+                                </script>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
+<style>
+    /* Petrolic color scheme */
+    body {
+        background-color: #e6f2f3;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    table.table {
+        border: none;
+    }
+
+        table.table th, table.table td {
+            border: 1px solid #005f6b;
+            vertical-align: middle;
+        }
+
+        table.table tr:hover {
+            background-color: #cde7e9;
+            transition: background-color 0.3s ease;
+        }
+
+    .alert-info {
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 6px;
+    }
+
+    /* PayPal button container */
+    #paypal-button-container- @* dynamic id *@ {
+        margin: auto;
+    }
+</style>

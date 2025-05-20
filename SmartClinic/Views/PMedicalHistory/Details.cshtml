@@ -5,40 +5,62 @@
     ViewData["Title"] = "Medical History Details";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Medical History</h2>
+<div class="container mt-5" style="max-width: 900px;">
 
-    <ul class="nav nav-tabs" id="medicalTabs" role="tablist">
+    <h2 class="mb-4 text-center" style="color: #005f6b; font-weight: 700; letter-spacing: 1.5px;">
+        Medical History
+    </h2>
+
+    <ul class="nav nav-tabs mb-4" id="medicalTabs" role="tablist" style="border-bottom: 3px solid #007a87;">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="diagnoses-tab" data-bs-toggle="tab" data-bs-target="#diagnoses" type="button" role="tab" aria-controls="diagnoses" aria-selected="true">
+            <button class="nav-link active"
+                    id="diagnoses-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#diagnoses"
+                    type="button" role="tab"
+                    aria-controls="diagnoses"
+                    aria-selected="true"
+                    style="color: #007a87; font-weight: 600; letter-spacing: 0.8px;">
                 Diagnoses
             </button>
         </li>
-        <!-- Tabs for future features -->
         <li class="nav-item" role="presentation">
-            <button class="nav-link disabled" type="button">Surgeries</button>
+            <button class="nav-link disabled"
+                    type="button"
+                    style="color: #a3c2c6; font-weight: 600; letter-spacing: 0.8px; cursor: not-allowed;">
+                Surgeries
+            </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link disabled" type="button">Medications</button>
+            <button class="nav-link disabled"
+                    type="button"
+                    style="color: #a3c2c6; font-weight: 600; letter-spacing: 0.8px; cursor: not-allowed;">
+                Medications
+            </button>
         </li>
     </ul>
 
-    <div class="tab-content mt-3" id="medicalTabsContent">
+    <div class="tab-content" id="medicalTabsContent">
         <!-- Diagnoses Tab -->
-        <div class="tab-pane fade show active" id="diagnoses" role="tabpanel" aria-labelledby="diagnoses-tab">
+        <div class="tab-pane fade show active"
+             id="diagnoses"
+             role="tabpanel"
+             aria-labelledby="diagnoses-tab">
             @if (Model.Diagnoses.Any())
             {
-                <div class="row">
+                <div class="row gx-4 gy-4">
                     @for (int i = 0; i < Model.Diagnoses.Count; i++)
                     {
                         var entry = Model.Diagnoses[i];
                         <div class="col-md-6">
-                            <div class="card mb-4 shadow-sm">
+                            <div class="card shadow-sm border-0" style="border-radius: 15px; background: #e6f2f3;">
                                 <div class="card-body">
-                                    <h5 class="card-title">Diagnosis @((i + 1))</h5>
-                                    <p><strong>Date:</strong> @entry.Date?.ToString("yyyy-MM-dd")</p>
-                                    <p><strong>Diagnosis:</strong> @entry.Diagnosis</p>
-                                    <p><strong>Notes:</strong> @entry.Notes</p>
+                                    <h5 class="card-title" style="color: #004451; font-weight: 700;">
+                                        Diagnosis @((i + 1))
+                                    </h5>
+                                    <p><strong style="color: #007a87;">Date:</strong> <span style="color: #004451;">@entry.Date?.ToString("yyyy-MM-dd")</span></p>
+                                    <p><strong style="color: #007a87;">Diagnosis:</strong> <span style="color: #004451;">@entry.Diagnosis</span></p>
+                                    <p><strong style="color: #007a87;">Notes:</strong> <span style="color: #004451;">@entry.Notes</span></p>
                                 </div>
                             </div>
                         </div>
@@ -47,19 +69,30 @@
             }
             else
             {
-                <div class="alert alert-info">No diagnoses recorded.</div>
+                <div class="alert alert-info" style="border-color: #007a87; color: #004451; background-color: #dff4f5;">
+                    No diagnoses recorded.
+                </div>
             }
         </div>
 
-        <!-- Future tabs (empty or disabled for now) -->
+        <!-- Future tabs -->
         <div class="tab-pane fade" id="surgeries" role="tabpanel" aria-labelledby="surgeries-tab">
-            <div class="alert alert-secondary">Surgeries data coming soon...</div>
+            <div class="alert alert-secondary" style="background-color: #cde4e7; color: #005f6b; border-color: #007a87;">
+                Surgeries data coming soon...
+            </div>
         </div>
         <div class="tab-pane fade" id="medications" role="tabpanel" aria-labelledby="medications-tab">
-            <div class="alert alert-secondary">Medications data coming soon...</div>
+            <div class="alert alert-secondary" style="background-color: #cde4e7; color: #005f6b; border-color: #007a87;">
+                Medications data coming soon...
+            </div>
         </div>
     </div>
 
-    <a href="@Url.Action("CreateOrEdit", "PMedicalHistory")" class="btn btn-primary mt-4">Edit Medical History</a>
+    <div class="d-flex justify-content-center mt-5">
+        <a href="@Url.Action("CreateOrEdit", "PMedicalHistory")"
+           class="btn"
+           style="background-color: #007a87; color: white; font-weight: 700; padding: 12px 40px; border-radius: 30px; box-shadow: 0 6px 12px rgba(0, 122, 135, 0.4); transition: background-color 0.3s;">
+            Edit Medical History
+        </a>
+    </div>
 </div>
-
