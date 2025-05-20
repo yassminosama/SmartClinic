@@ -97,7 +97,7 @@ namespace SmartClinic.Controllers
                     await model.ImageFile.CopyToAsync(fileStream);
                 }
 
-                doctor.PhotoUrl = "/Images/" + uniqueFileName;
+                doctor.PhotoUrl =  uniqueFileName;
             }
 
             // Optionally update using EF if you have DbContext:
@@ -329,5 +329,75 @@ namespace SmartClinic.Controllers
             return View(viewModel);
         }
 
+
+        [HttpGet]
+        public IActionResult CreateReceptionist()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateReceptionist(ReceptionistRegistrationVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Get current doctor
+                var user = await _userManager.GetUserAsync(User);
+                var doctor = user as Doctor;
+                if (doctor == null) return NotFound();
+
+                var receptionist = new Receptionist
+                {
+                    FullName = model.FullName,
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    Salary = model.Salary,
+                    DoctorId = doctor.Id,
+                    EmailConfirmed = true // You might want to implement email confirmation later
+                };
+
+                var result = await _userManager.CreateAsync(receptionist, model.Password);
+
+                if (result.Succeeded)
+                {
+                    // Assign Receptionist role
+                    await _userManager.AddToRoleAsync(receptionist, "Receptionist");
+
+                    return RedirectToAction("ReceptionistList");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
+        }
+
+
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> ReceptionistList()
+        {
+            // Get current doctor
+            var user = await _userManager.GetUserAsync(User);
+            var doctor = user as Doctor;
+            if (doctor == null) return NotFound();
+
+            // Get receptionists for this doctor
+            var receptionists = await _context.Receptionists
+                .Where(r => r.DoctorId == doctor.Id && !r.IsDeleted)
+                .ToListAsync();
+
+            return View(receptionists);
+        }
+
+       
     }
 }

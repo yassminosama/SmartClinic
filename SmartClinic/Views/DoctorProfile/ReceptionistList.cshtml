@@ -1,0 +1,32 @@
+﻿@model List<SmartClinic.Models.Receptionist>
+
+<h2>My Receptionists</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Salary</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var receptionist in Model)
+        {
+            <tr>
+                <td>@receptionist.FullName</td>
+                <td>@receptionist.Email</td>
+                <td>@receptionist.PhoneNumber</td>
+                <td>@receptionist.Salary.GetValueOrDefault().ToString("C")</td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="CreateReceptionist" class="btn btn-success">Add New Receptionist</a>
+
+<a asp-controller="DoctorDashboard" asp-action="DashDIndex" class="btn btn-secondary ml-2">Back to Dashboard</a>
+                       

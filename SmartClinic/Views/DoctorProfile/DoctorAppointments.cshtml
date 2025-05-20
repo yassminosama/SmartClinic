@@ -1,4 +1,4 @@
-﻿@model List<SmartClinic.ViewModels.AppointmentViewModel>
+﻿@* @model List<SmartClinic.ViewModels.AppointmentViewModel>
 
 <h2>Your Appointments</h2>
 
@@ -12,8 +12,9 @@
 
         </tr>
     </thead>
-    <tbody>
-        @foreach (var appt in Model)
+    <tbody> *@
+        
+        @* @foreach (var appt in Model)
         {
             <tr>
                 <td>@appt.PatientName</td>
@@ -25,14 +26,14 @@
                        asp-route-appointmentId="@appt.AppointmentId"
                        class="btn btn-sm btn-primary">
                         Create Prescription
-                    </a>
+                    </a> *@
                     @* <a asp-controller="PatientProfile"
                        asp-action="Index"
                        asp-route-id="@appt.PatientName"
                        class="btn btn-sm btn-info">
                         👤 View Profile
                     </a> *@
-                </td>
+@*                 </td>
                                <td>
                     <a asp-controller="DoctorProfile" asp-action="PatientDetails" asp-route-patientId="@appt.PatientId" class="btn btn-primary btn-sm">
                         View Patient
@@ -42,4 +43,126 @@
             </tr>
         }
     </tbody>
+</table> *@
+
+
+
+
+
+
+@* @model List<SmartClinic.ViewModels.AppointmentViewModel>
+
+<h2>Your Today's Appointments</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var appt in Model.Where(a => a.AppointmentDate.Date == DateTime.Today))
+        {
+            <tr>
+                <td>@appt.PatientName</td>
+                <td>@appt.AppointmentDate.ToString("g")</td>
+                <td>@appt.Status</td>
+                <td>
+                    <a asp-action="CreatePrescription"
+                       asp-controller="DoctorProfile"
+                       asp-route-appointmentId="@appt.AppointmentId"
+                       class="btn btn-sm btn-primary">
+                        Create Prescription
+                    </a>
+                </td>
+                <td>
+                    <a asp-controller="DoctorProfile"
+                       asp-action="PatientDetails"
+                       asp-route-patientId="@appt.PatientId"
+                       class="btn btn-primary btn-sm">
+                        View Patient
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+
+@if (!Model.Any(a => a.AppointmentDate.Date == DateTime.Today))
+{
+    <div class="alert alert-info">No appointments for today.</div>
+} *@
+
+
+
+
+                    @model List<SmartClinic.ViewModels.AppointmentViewModel>
+
+@{
+    ViewData["Title"] = "Your Today's Appointments";
+}
+
+<h2>Your Today's Appointments</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var appt in Model.Where(a => a.AppointmentDate.Date == DateTime.Today))
+        {
+            <tr>
+                <td>@(string.IsNullOrEmpty(appt.PatientName) ? appt.GuestName : appt.PatientName)</td>
+                <td>@appt.AppointmentDate.ToString("g")</td>
+                <td>@appt.Status</td>
+                <td>
+                    @if (string.IsNullOrEmpty(appt.GuestName))
+                    {
+                        <!-- Regular patient (not guest) -->
+                        <a asp-action="CreatePrescription"
+                           asp-controller="DoctorProfile"
+                           asp-route-appointmentId="@appt.AppointmentId"
+                           class="btn btn-sm btn-primary">
+                            Create Prescription
+                        </a>
+                        <a asp-controller="DoctorProfile"
+                           asp-action="PatientDetails"
+                           asp-route-patientId="@appt.PatientId"
+                           class="btn btn-primary btn-sm">
+                            View Patient
+                        </a>
+                    }
+                    else
+                    {
+                        <!-- Guest patient -->
+                        <button class="btn btn-sm btn-secondary" disabled title="Not available for guest appointments">
+                            Create Prescription
+                        </button>
+                        <button class="btn btn-sm btn-secondary" disabled title="Not available for guest appointments">
+                            View Patient
+                        </button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any(a => a.AppointmentDate.Date == DateTime.Today))
+{
+    <div class="alert alert-info">No appointments for today.</div>
+}
+
+<div class="mt-3">
+    <a asp-controller="DoctorDashboard" asp-action="DashDIndex" class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+</div>
