@@ -23,18 +23,29 @@ namespace SmartClinic.Controllers
         public async Task<IActionResult> DashRIndex()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user == null) return RedirectToAction("Error", "Home");
+
+            // Get the creating doctor's ID (use CreatedByDoctorId instead of DoctorId)
+            var createdByDoctorId = user.CreatedByDoctorId;
+            if (string.IsNullOrEmpty(createdByDoctorId))
             {
-                return RedirectToAction("Error", "Home");
+                return View(new ReceptionistDashboardVM
+                {
+                    User = user,
+                    Appointments = new List<AppointmentViewModel>(),
+                    Doctors = new List<Doctor>()
+                });
             }
 
             var today = DateTime.Today;
             var appointments = await _context.Appointments
-                .Where(a => !a.IsDeleted && a.AppointmentDate.Date == today)
+                .Where(a => !a.IsDeleted &&
+                       a.AppointmentDate.Date == today &&
+                       a.DoctorId == createdByDoctorId) // Filter by creating doctor
                 .Include(a => a.Patient)
                 .Include(a => a.Doctor)
                 .Include(a => a.Bill)
-                .OrderBy(a => a.CreatedAt) // Order by creation time
+                .OrderBy(a => a.CreatedAt)
                 .Select(a => new AppointmentViewModel
                 {
                     AppointmentId = a.AppointmentId,
@@ -54,33 +65,41 @@ namespace SmartClinic.Controllers
                 .ToListAsync();
 
             var doctors = await _context.Doctors
-                .Where(d => !d.IsDeleted)
-                .ToListAsync();
+        .Where(d => !d.IsDeleted && d.Id == createdByDoctorId)
+        .ToListAsync();
 
-            var viewModel = new ReceptionistDashboardVM
+            return View(new ReceptionistDashboardVM
             {
                 User = user,
                 Appointments = appointments,
                 Doctors = doctors
-            };
-
-            return View(viewModel);
+            });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateGuestAppointment(string guestName, string guestPhone, string doctorId, DateTime appointmentDate)
+        public async Task<IActionResult> CreateGuestAppointment(string guestName, string guestPhone, DateTime appointmentDate)
         {
-            if (string.IsNullOrEmpty(guestName) || string.IsNullOrEmpty(guestPhone) || string.IsNullOrEmpty(doctorId))
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Error", "Home");
+
+            if (string.IsNullOrEmpty(guestName) || string.IsNullOrEmpty(guestPhone))
             {
-                return BadRequest("All fields are required.");
+                return BadRequest("Guest name and phone are required.");
+            }
+
+            // Automatically use the creating doctor's ID
+            var createdByDoctorId = user.CreatedByDoctorId;
+            if (string.IsNullOrEmpty(createdByDoctorId))
+            {
+                return BadRequest("No associated doctor found.");
             }
 
             var appointment = new Appointment
             {
                 GuestName = guestName,
                 GuestPhone = guestPhone,
-                DoctorId = doctorId,
+                DoctorId = createdByDoctorId, // Auto-assign to creating doctor
                 AppointmentDate = appointmentDate,
                 Status = "Scheduled",
                 CreatedAt = DateTime.Now

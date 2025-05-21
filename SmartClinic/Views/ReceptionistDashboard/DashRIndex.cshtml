@@ -168,6 +168,7 @@
 </table>
 
 <h3>Create Guest Appointment</h3>
+<!-- Remove the doctor dropdown from the form -->
 <form asp-action="CreateGuestAppointment" method="post">
     @Html.AntiForgeryToken()
     <div class="form-group">
@@ -177,15 +178,6 @@
     <div class="form-group">
         <label for="guestPhone">Guest Phone</label>
         <input type="text" id="guestPhone" name="guestPhone" class="form-control" required />
-    </div>
-    <div class="form-group">
-        <label for="doctorId">Doctor</label>
-        <select id="doctorId" name="doctorId" class="form-control" required>
-            @foreach (var doctor in Model.Doctors)
-            {
-                <option value="@doctor.Id">@doctor.FullName</option>
-            }
-        </select>
     </div>
     <div class="form-group">
         <label for="appointmentDate">Appointment Date</label>

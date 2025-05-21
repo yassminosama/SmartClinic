@@ -16,5 +16,9 @@ namespace SmartClinic.Models
 
         [NotMapped]
         public IFormFile imageFile { get; set; }
+        public string? CreatedByDoctorId { get; set; }
+
+        [ForeignKey("CreatedByDoctorId")]
+        public virtual Doctor? CreatedByDoctor { get; set; }
     }
 }

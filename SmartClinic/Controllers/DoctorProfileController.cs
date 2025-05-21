@@ -336,13 +336,54 @@ namespace SmartClinic.Controllers
             return View();
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> CreateReceptionist(ReceptionistRegistrationVM model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Get current doctor
+        //        var user = await _userManager.GetUserAsync(User);
+        //        var doctor = user as Doctor;
+        //        if (doctor == null) return NotFound();
+
+        //        var receptionist = new Receptionist
+        //        {
+        //            FullName = model.FullName,
+        //            UserName = model.UserName,
+        //            Email = model.Email,
+        //            PhoneNumber = model.PhoneNumber,
+        //            Salary = model.Salary,
+        //            DoctorId = doctor.Id,
+        //            EmailConfirmed = true // You might want to implement email confirmation later
+        //        };
+
+        //        var result = await _userManager.CreateAsync(receptionist, model.Password);
+
+        //        if (result.Succeeded)
+        //        {
+        //            // Assign Receptionist role
+        //            await _userManager.AddToRoleAsync(receptionist, "Receptionist");
+
+        //            return RedirectToAction("ReceptionistList");
+        //        }
+
+        //        foreach (var error in result.Errors)
+        //        {
+        //            ModelState.AddModelError(string.Empty, error.Description);
+        //        }
+        //    }
+
+        //    return View(model);
+        //}
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateReceptionist(ReceptionistRegistrationVM model)
         {
             if (ModelState.IsValid)
             {
-                // Get current doctor
                 var user = await _userManager.GetUserAsync(User);
                 var doctor = user as Doctor;
                 if (doctor == null) return NotFound();
@@ -354,17 +395,16 @@ namespace SmartClinic.Controllers
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
                     Salary = model.Salary,
-                    DoctorId = doctor.Id,
-                    EmailConfirmed = true // You might want to implement email confirmation later
+                    DoctorId = doctor.Id, // This sets the direct relationship
+                    CreatedByDoctorId = doctor.Id, // Add this line to track who created them
+                    EmailConfirmed = true
                 };
 
                 var result = await _userManager.CreateAsync(receptionist, model.Password);
 
                 if (result.Succeeded)
                 {
-                    // Assign Receptionist role
                     await _userManager.AddToRoleAsync(receptionist, "Receptionist");
-
                     return RedirectToAction("ReceptionistList");
                 }
 
@@ -373,12 +413,8 @@ namespace SmartClinic.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
             return View(model);
         }
-
-
-
 
 
 
