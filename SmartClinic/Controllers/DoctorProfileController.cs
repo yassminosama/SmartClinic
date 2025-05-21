@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SmartClinic.Controllers
 {
-    [Authorize(Roles = "Doctor")]
+    [Authorize(Roles = "Doctor,Admin")]
     public class DoctorProfileController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -42,9 +42,9 @@ namespace SmartClinic.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> DoctorPEdit()
+        public async Task<IActionResult> DoctorPEdit(string id)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(id);
             var doctor = user as Doctor;
             if (doctor == null) return RedirectToAction("Index", "Home");
 

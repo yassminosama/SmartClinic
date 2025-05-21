@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartClinic.Data;
 using SmartClinic.Models;
 
-[Authorize(Roles = "Patient")]
+[Authorize(Roles = "Patient,Admin")]
 public class PatientProfileController : Controller
 {
     private readonly UserManager<AppUser> _userManager;
@@ -31,10 +31,10 @@ public class PatientProfileController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit()
+    public async Task<IActionResult> Edit(string id)
     {
-        var user = await _userManager.GetUserAsync(User);
-        return View(user);
+        var user = await _userManager.FindByIdAsync(id);
+        return View("DoctorPEdit",user);
     }
 
     [HttpPost]
