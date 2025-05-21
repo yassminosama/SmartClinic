@@ -116,21 +116,20 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label asp-for="Medications[i].Duration"></label>
-                            <input asp-for="Medications[i].Duration" class="form-control" />
+                            <select asp-for="Medications[i].Duration" class="form-control">
+                                @for (int d = 1; d <= 30; d++)
+                                {
+                                    <option value="@($"{d} Day")">@($"{d} Day")</option>
+                                }
+                                @for (int m = 1; m <= 12; m++)
+                                {
+                                    <option value="@($"{m} Month")">@($"{m} Month")</option>
+                                }
+                            </select>
                             <span asp-validation-for="Medications[i].Duration" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Medications[i].StartDate"></label>
-                            <input asp-for="Medications[i].StartDate" type="date" class="form-control" />
-                            <span asp-validation-for="Medications[i].StartDate" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Medications[i].EndDate"></label>
-                            <input asp-for="Medications[i].EndDate" type="date" class="form-control" />
-                            <span asp-validation-for="Medications[i].EndDate" class="text-danger"></span>
-                        </div>
+              
                     </div>
                     <div class="form-group">
                         <label asp-for="Medications[i].Instructions"></label>
@@ -138,7 +137,7 @@
                         <span asp-validation-for="Medications[i].Instructions" class="text-danger"></span>
                     </div>
                 </div>
-            </div>
+            
         }
     </div>
 
@@ -174,21 +173,15 @@
                                     <label>Dosage</label>
                                     <input name="Medications[${index}].Dosage" class="form-control" />
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label>Duration</label>
-                                    <input name="Medications[${index}].Duration" class="form-control" />
-                                </div>
+                                      <div class="form-group col-md-6">
+            <label>Duration</label>
+            <select name="Medications[${index}].Duration" class="form-control">
+                ${[...Array(30).keys()].map(i => <option value="${i+1} Day">${i+1} Day</option>).join('')}
+                ${[...Array(12).keys()].map(i => <option value="${i+1} Month">${i+1} Month</option>).join('')}
+            </select>
+        </div>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label>Start Date</label>
-                                    <input name="Medications[${index}].StartDate" type="date" class="form-control" />
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label>End Date</label>
-                                    <input name="Medications[${index}].EndDate" type="date" class="form-control" />
-                                </div>
-                            </div>
+                    
                             <div class="form-group">
                                 <label>Instructions</label>
                                 <textarea name="Medications[${index}].Instructions" class="form-control"></textarea>

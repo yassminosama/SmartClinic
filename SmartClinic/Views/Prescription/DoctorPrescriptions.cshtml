@@ -44,14 +44,21 @@ else
                             <ul class="list-group" style="border: none;">
                                 @foreach (var med in prescription.Medications)
                                 {
-                                    <li class="list-group-item" style="border: 1px solid #007a87; border-radius: 8px; margin-bottom: 10px; background: #d8ecf0;">
+                                    <li class="list-group-item medication-item" style="...">
                                         <strong>@med.Name</strong> - @med.Dosage<br />
                                         <small style="color: #004451;">
-                                            From: @med.StartDate.ToString("dd MMM")
-                                            To: @med.EndDate.ToString("dd MMM")<br />
-                                            Duration: @med.Duration<br />
+                                            Duration: <span class="med-duration">@med.Duration</span><br />
                                             Instructions: @med.Instructions
                                         </small>
+
+                                        <div class="mt-2">
+                                            <label class="form-label">Start Date:</label>
+                                            <input type="date" class="form-control form-control-sm start-date" />
+                                        </div>
+                                        <div class="mt-2">
+                                            <label class="form-label">Calculated End Date:</label>
+                                            <input type="text" class="form-control form-control-sm end-date" readonly />
+                                        </div>
                                     </li>
                                 }
                             </ul>
@@ -83,3 +90,48 @@ else
             border-color: #005f6b;
         }
 </style>
+
+
+
+    <script>
+        function parseDuration(durationStr) {
+            if (!durationStr) return 0;
+
+            const lower = durationStr.toLowerCase().trim();
+
+            // Match formats like "1 Day", "30 Day", "1 Month", "12 Month"
+            const match = lower.match(/^(\d+)\s*(day|month)s?$/);
+            if (!match) return 0;
+
+            const value = parseInt(match[1]);
+            const unit = match[2];
+
+            if (unit === "day") return value;
+            if (unit === "month") return value * 30; // approx
+
+            return 0;
+        }
+
+        $(document).ready(function () {
+            $(".start-date").on("change", function () {
+                const $container = $(this).closest(".medication-item");
+                const durationText = $container.find(".med-duration").text().trim();
+                const startDateStr = $(this).val();
+
+                if (!startDateStr) return;
+
+                const durationDays = parseDuration(durationText);
+                if (durationDays === 0) return;
+
+                const startDate = new Date(startDateStr);
+                startDate.setDate(startDate.getDate() + durationDays);
+
+                const yyyy = startDate.getFullYear();
+                const mm = String(startDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(startDate.getDate()).padStart(2, '0');
+
+                const formattedEndDate = ${yyyy}-${mm}-${dd};
+                $container.find(".end-date").val(formattedEndDate);
+            });
+        });
+    </script>
